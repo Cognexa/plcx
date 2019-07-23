@@ -1,4 +1,4 @@
-from bymessage.utils.yaml import load_yaml
+from plcx.utils.yaml import load_yaml
 
 
 def test_load_yaml_file(tmpdir):

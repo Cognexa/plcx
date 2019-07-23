@@ -41,7 +41,7 @@ def bits_to_int(bits: bitarray) -> int:
 
 
 @not_empty_bits
-def read_bits(bits: bitarray, type_: Any) -> Union[str, int, float, bool]:
+def bits_to_type(bits: bitarray, type_: Any) -> Union[str, int, float, bool]:
     """
     Convert bits to define type.
 
@@ -67,4 +67,4 @@ def bits_to_dict(bits: bitarray, config: List[Tuple[int, int, str, Any]]) -> Dic
     :param config: list of message components define as tuple, (<start>, <end>, <name>, <type>)
     :return: dictionary with parameters name as keys and values as values
     """
-    return {name: read_bits(bits[start:end], type_) for start, end, name, type_ in config}
+    return {name: bits_to_type(bits[start:end], type_) for start, end, name, type_ in config}

@@ -2,7 +2,7 @@ import pytest
 
 from bitarray import bitarray
 
-from plcx.utils.converter import read_bits, bits_to_dict
+from plcx.utils.converter import bits_to_type, bits_to_dict
 
 
 @pytest.mark.parametrize('bits, type_, expect_value', [
@@ -21,7 +21,7 @@ def test_convert_bits(bits, type_, expect_value):
     :param type_: convert to type
     :param expect_value: expected value
     """
-    assert read_bits(bits, type_) == expect_value
+    assert bits_to_type(bits, type_) == expect_value
 
 
 @pytest.mark.parametrize('bits, type_, expect_error', [
@@ -44,7 +44,7 @@ def test_convert_bits_error(bits, type_, expect_error):
     :param expect_error: expect_error
     """
     with pytest.raises(expect_error):
-        read_bits(bits, type_)
+        bits_to_type(bits, type_)
 
 
 @pytest.mark.parametrize('bits, config, expect_value', [
