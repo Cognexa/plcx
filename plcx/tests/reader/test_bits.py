@@ -1,6 +1,6 @@
 import pytest
 
-from bymessage.utils.bitarray import bitarray
+from plcx.utils.bitarray import bitarray
 
 
 @pytest.mark.parametrize('message, readable, expect_value', [

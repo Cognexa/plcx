@@ -1,6 +1,6 @@
-# ByMessage
+# plcx
 
-Package for reading message in bytes or bits.
+Package for communication with PLC. Capable of reading message in bytes or bits.
 
 ```yaml
 receive:

@@ -1,7 +1,7 @@
 from bitarray import bitarray
 from typing import Any, Dict, List, Tuple, Union
 
-from bymessage.utils.decorators import not_empty_bits
+from plcx.utils.decorators import not_empty_bits
 
 
 @not_empty_bits

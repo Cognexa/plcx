@@ -1,7 +1,7 @@
 import pytest
 
-from bymessage.utils.converter import bits_to_type, bits_to_dict
-from bymessage.utils.bitarray import bitarray
+from plcx.utils.converter import bits_to_type, bits_to_dict
+from plcx.utils.bitarray import bitarray
 
 
 @pytest.mark.parametrize('bits, type_, expect_value', [

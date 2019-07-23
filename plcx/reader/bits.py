@@ -3,9 +3,9 @@ import logging
 from bitarray import bitarray
 from typing import Dict, NoReturn
 
-from bymessage.reader.base import BaseReader, VALUE
-from bymessage.utils.converter import bits_to_type, bits_to_dict
-from bymessage.utils.decorators import msg_length
+from plcx.reader.base import BaseReader, VALUE
+from plcx.utils.converter import bits_to_type, bits_to_dict
+from plcx.utils.decorators import msg_length
 
 
 logger = logging.getLogger(__name__)

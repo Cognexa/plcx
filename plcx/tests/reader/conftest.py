@@ -1,6 +1,6 @@
 import pytest
 
-from bymessage.reader.bits import BitesReader
+from plcx.reader.bits import BitesReader
 
 
 @pytest.fixture
