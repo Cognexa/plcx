@@ -15,3 +15,18 @@ def not_empty_bits(func):
         return func(bits, *args, **kwargs)
 
     return wrapper
+
+
+def msg_length(func):
+    """
+    Test bitarray length.
+    """
+
+    @wraps(func)
+    def wrapper(self, msg: bitarray):
+        if msg.length() != getattr(self, 'length', 0):
+            raise TypeError('wrong message length')
+
+        return func(self, msg=msg)
+
+    return wrapper

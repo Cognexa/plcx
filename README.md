@@ -8,7 +8,7 @@ receive:
   messages:
     - name: message_1
       types: bits
-      lenght: 64
+      length: 64
       define: (0, 8, int, 1)  # start, end, type and expected value
       blocks:
         - (8, 24, '2letter', str)  # start, end, name and type
