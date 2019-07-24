@@ -2,7 +2,7 @@ import struct
 
 from typing import Dict, List, Tuple, Union
 
-from plcx.utils.boolean import find_boolean_format, to_boolean_list
+from plcx.utils.boolean import find_boolean_format, to_list
 
 
 VALUE = Union[str, int, float, bool, List[bool]]
@@ -20,11 +20,11 @@ def bytes_to_list(msg: bytes, format_: str) -> List[VALUE]:
         raise TypeError('Got unexpected type of message.')
 
     # find all defined boolean list in format
-    format_, boolean_list_index = find_boolean_format(format_)
+    format_, indexes = find_boolean_format(format_)
     # unpack bytes to tuple
     result = struct.unpack(format_, msg)
     # convert one byte character to boolean list
-    return [to_boolean_list(r) if i in boolean_list_index else r for i, r in enumerate(result)]
+    return [to_list(r) if i in indexes else r for i, r in enumerate(result)]
 
 
 def bytes_to_dict(msg: bytes, config: List[Tuple[str, str]]) -> Dict[str, VALUE]:
