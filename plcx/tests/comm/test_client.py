@@ -14,9 +14,9 @@ def test_client_context(tcp_server, msg):
     """
     host, port = tcp_server
     with Client(host=host, port=port) as client:
-        result = client.send(msg.encode(), 512)
+        response = client.send(msg.encode(), 512)
 
-    assert result.decode() == f"received:'{msg}'"
+    assert response.decode() == f"received:'{msg}'"
 
 
 def test_client_context_error(tcp_server):
@@ -46,3 +46,31 @@ def test_client_context_error(tcp_server):
     with pytest.raises(asyncio.TimeoutError):
         with Client(host=host, port=port) as client:
             client.send(b'123', 16, .05)
+
+    # testing stopped loop
+    with pytest.raises(RuntimeError):
+        with Client(host=host, port=port) as client:
+            client.loop.stop()  # stop loop
+            client.send(b'123')
+
+
+def test_client_context_new(tcp_server):
+    """
+    Test enter Client more time.
+
+    :param tcp_server: tuple with host and port of testing server
+    """
+    host, port = tcp_server
+
+    client = Client(host=host, port=port)
+
+    with client:
+        response = client.send(b'123', 32)
+        assert response.decode() == "received:'123'"
+
+    assert client.loop.is_running() is False and client.loop.is_closed() is True
+
+    # try create new client
+    with client:
+        response = client.send(b'123', 32)
+        assert response.decode() == "received:'123'"

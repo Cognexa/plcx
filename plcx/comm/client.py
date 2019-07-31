@@ -46,6 +46,7 @@ class Client:
         return self
 
     def __exit__(self, *exc):
+        self.loop.stop()
         self.loop.close()
 
     def send(self, message: bytes, response_bytes: int = 0, time_out: float = 1) -> bytes:
