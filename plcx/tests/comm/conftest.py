@@ -5,6 +5,7 @@ import threading
 
 async def echo_handler(reader, writer):
     data = await reader.read(512)
+    await asyncio.sleep(.1)
     writer.write(f'received:{data.decode()!r}'.encode())
     await writer.drain()  # Flow control, see later
     writer.close()

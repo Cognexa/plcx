@@ -1,3 +1,4 @@
+import asyncio
 import pytest
 
 from plcx.comm.client import Client
@@ -41,3 +42,7 @@ def test_client_context_error(tcp_server):
         with Client(host='hola', port=port) as client:
             client.send(b'', 1)
 
+    # testing time out
+    with pytest.raises(asyncio.TimeoutError):
+        with Client(host=host, port=port) as client:
+            client.send(b'123', 16, .05)
