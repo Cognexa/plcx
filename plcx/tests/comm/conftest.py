@@ -45,7 +45,7 @@ def tcp_client():
         """
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as soc:
             soc.connect((host, port))  # connect to server
-            soc.sendall(message)  # send message
+            soc.send(message)  # send message
             response = soc.recv(read_bytes)  # receive response to message
             soc.close()  # close server
 

@@ -46,11 +46,6 @@ class Client:
         self.port = port
         self.loop = asyncio.new_event_loop()
 
-    def __del__(self):
-        self.loop.stop()
-        self.loop.close()
-        del self
-
     def __enter__(self):
         if not self.loop.is_running():
             self.loop = asyncio.new_event_loop()
