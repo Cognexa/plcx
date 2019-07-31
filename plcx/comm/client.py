@@ -20,14 +20,14 @@ async def tcp_send_echo(
     :param port: host port
     :param loop: asyncio event loop
     :param response_bytes: max number of bytes to read [0 == empty response]
-    :param time_out: waiting time out, use in connection and reading response
+    :param time_out: waiting time out, use in connection and reading response [1 second]
     :return:
     """
-    # open connection
+    # open connection with timeout
     reader, writer = await asyncio.wait_for(asyncio.open_connection(host=host, port=port, loop=loop), timeout=time_out)
     # send message to server
     writer.write(message)
-    # get response
+    # get response with timeout
     response = await asyncio.wait_for(reader.read(response_bytes), timeout=time_out)
     # close connection
     writer.close()
@@ -36,9 +36,20 @@ async def tcp_send_echo(
 
 class Client:
     def __init__(self, host: str, port: int):
+        """
+        Initialized client.
+
+        :param host: server host name or ip
+        :param port: server port
+        """
         self.host = host
         self.port = port
         self.loop = asyncio.new_event_loop()
+
+    def __del__(self):
+        self.loop.stop()
+        self.loop.close()
+        del self
 
     def __enter__(self):
         if not self.loop.is_running():
