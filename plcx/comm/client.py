@@ -34,7 +34,7 @@ async def tcp_send_echo(
     return response
 
 
-class Client:
+class clientx:
     def __init__(self, host: str, port: int):
         """
         Initialized client.
@@ -47,7 +47,7 @@ class Client:
         self.loop = asyncio.new_event_loop()
 
     def __enter__(self):
-        if not self.loop.is_running():
+        if not self.loop.is_running() or self.loop.is_closed():
             self.loop = asyncio.new_event_loop()
         return self
 
