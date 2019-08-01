@@ -29,16 +29,13 @@ def test_client_context_new(tcp_server):
     client = clientx(host=host, port=port)
 
     with client:
-        response = client.send(b'123', 32)
-        assert response.decode() == "received:'123'"
+        assert client.send(b'123', 32).decode() == "received:'123'"
 
     assert client.loop.is_running() is False and client.loop.is_closed() is True
 
     # try create new client
     with client:
-        response = client.send(b'123', 32)
-        assert response.decode() == "received:'123'"
-
+        assert client.send(b'123', 32).decode() == "received:'123'"
 
 
 def test_client_context_error(tcp_server):
@@ -73,4 +70,5 @@ def test_client_context_error(tcp_server):
     with pytest.raises(RuntimeError):
         with clientx(host=host, port=port) as client:
             client.loop.stop()  # stop loop
+            client.loop.close()
             client.send(b'123')

@@ -43,12 +43,20 @@ def tcp_client():
         :param read_bytes: size of bytes read as response
         :return: bytes response
         """
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as soc:
-            soc.connect((host, port))  # connect to server
-            soc.send(message)  # send message
-            response = soc.recv(read_bytes)  # receive response to message
-            soc.close()  # close server
+        try_count = 0
+        while try_count < 3:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as soc:
+                # try to make connection
+                try:
+                    soc.connect((host, port))  # connect to server
+                except:
+                    time.sleep(.1)
+                    try_count += 1
+                    continue
 
-        return response
+                soc.send(message)  # send message
+                response = soc.recv(read_bytes)  # receive response to message
+                soc.close()  # close server
+            return response
 
     yield host, port, client

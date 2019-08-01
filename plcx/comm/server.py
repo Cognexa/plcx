@@ -1,14 +1,26 @@
 import asyncio
+import forge
+import logging
 import threading
 
+from contextlib import contextmanager
+from typing import Callable
 
-def tcp_read_echo(read_bytes: int = 512) -> asyncio.coroutine:
+logger = logging.getLogger(__name__)
+
+
+def tcp_read_echo(response_handler: Callable, read_bytes: int = 512, time_out: int = 1) -> asyncio.coroutine:
     """
-    Read message from client.
+    Read and response to the message from the client.
 
+    :param response_handler: function to handler message and make response
     :param read_bytes: number of reading bytes
+    :param time_out: waiting time out, use in connection and reading response [1 second]
     :return: coroutine handler
     """
+    if not callable(response_handler):
+        raise AttributeError('response_handler must be callable function')
+
     async def echo_handler(reader, writer) -> None:
         """
         Receive message from client.
@@ -18,45 +30,66 @@ def tcp_read_echo(read_bytes: int = 512) -> asyncio.coroutine:
         :return:
         """
         # read message
-        message = await reader.read(read_bytes)  # max number of bytes to read
+        message = await asyncio.wait_for(reader.read(read_bytes), timeout=time_out)  # max number of bytes to read
 
         # wait for message response
-        # todo: use queue to get message response
-        response = b'ok'
+        response = b''
+        try:
+            response = response_handler(message)
+        except Exception as error:
+            response = f'{error.__class__.__name__}'.encode()
+        finally:
+            # send response
+            writer.write(response)
 
-        # send response
-        writer.write(response)
-
-        await writer.drain()
-        writer.close()
+            # close writer
+            await writer.drain()
+            writer.close()
 
     return echo_handler
 
 
-def serverx(host: str, port: int, read_bytes: int = 512) -> None:
+def serverx(
+        host: str,
+        port: int,
+        response_handler: Callable,
+        read_bytes: int = 512,
+        time_out: int = 1
+) -> asyncio.AbstractEventLoop:
     """
-    Initialized server and run it for ever.
+    Initialized event loop and add server to it.
 
     :param host: server host name or ip
     :param port: server port
+    :param response_handler: function to handler message and make response
     :param read_bytes: number of reading bytes
+    :param time_out: waiting time out, use in connection and reading response [1 second]
+    :return: asyncio event loop
     """
     loop = asyncio.new_event_loop()
-    _server = asyncio.start_server(tcp_read_echo(read_bytes), host, port, loop=loop)
-    loop.run_until_complete(_server)
-    loop.run_forever()
+    server = asyncio.start_server(tcp_read_echo(response_handler, read_bytes, time_out), host, port, loop=loop)
+    loop.create_task(server)
+
+    return loop
 
 
-def serverx_in_thread(host: str, port: int, read_bytes: int = 512) -> threading.Thread:
+@forge.copy(serverx)
+@contextmanager
+def serverx_in_thread(*args, **kwargs) -> threading.Thread:
     """
     Run Server in thread.
 
-    :param host: server host name or ip
-    :param port: server port
-    :param read_bytes: number of reading bytes
     :return: server thread
     """
-    thread = threading.Thread(target=serverx, name='server', args=(host, port, read_bytes, ))
-    thread.daemon = True
+
+    loop = serverx(*args, **kwargs)
+    thread = threading.Thread(target=loop.run_forever, name='server')
     thread.start()
-    return thread
+    logger.info(f'Thread `({thread.ident}, {thread.name})` was start.')
+    try:
+        yield thread
+    finally:
+        loop.call_soon_threadsafe(loop.stop)
+        thread.join()
+        loop.close()
+        logger.info(f'Thread `({thread.ident}, {thread.name})` was stopped.')
