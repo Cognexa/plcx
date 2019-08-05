@@ -35,6 +35,6 @@ def bytes_to_dict(msg: bytes, config: List[Tuple[str, str]]) -> Dict[str, VALUE]
     :param config: list of message components define as tuple, (<name>, <format>)
     :return: dictionary with parameters name as keys and values as values
     """
-    keys = [name for name, _ in config]
+    keys = [name for name, format_ in config if format_ != 'x']
     values = bytes_to_list(msg=msg, format_=''.join([f for _, f in config]))
     return dict(zip(keys, values))
