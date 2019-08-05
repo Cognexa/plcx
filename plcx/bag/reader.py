@@ -11,8 +11,8 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class Reader:
-    tag: Tuple[str, Any]
-    message_format: List[Tuple[str, str]]
+    tag: Tuple[str, Any]  # (<format>, <value>)
+    arguments: List[Tuple[str, str]]  # (<name>, <format>)
     byte_order: str = '@'
 
     def is_readable(self, message: bytes) -> bool:
@@ -39,4 +39,4 @@ class Reader:
         :param message: bytes message
         :return: dictionary with parameters
         """
-        return bytes_to_dict(message, self.message_format, self.byte_order)
+        return bytes_to_dict(message, self.arguments, self.byte_order)

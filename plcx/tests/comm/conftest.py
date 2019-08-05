@@ -15,14 +15,17 @@ def tcp_server():
             soc.listen(1)
 
             while True:
-                conn, addr = soc.accept()
-                while True:
-                    message = conn.recv(512)  # read just 512 bytes
-                    if not message:
-                        break
-                    time.sleep(0.05)  # wait to response
-                    conn.sendall(f'received:{message.decode()!r}'.encode())
-                conn.close()
+                try:
+                    conn, addr = soc.accept()
+                    while True:
+                        message = conn.recv(512)  # read just 512 bytes
+                        if not message:
+                            break
+                        time.sleep(0.05)  # wait to response
+                        conn.sendall(f'received:{message.decode()!r}'.encode())
+                    conn.close()
+                except ConnectionResetError:
+                    pass
 
     thread = threading.Thread(target=server, name='server')
     thread.daemon = True

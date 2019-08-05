@@ -1,11 +1,8 @@
 import struct
 
-from typing import Dict, List, Union
+from typing import Any, Dict, List, Union, Tuple
 
 from plcx.utils.boolean import find_boolean_format, list_to_byte
-
-
-VALUE = Union[str, int, float, bool, List[bool]]
 
 
 def to_bytes(format_: str, *args, byte_order: str = '@') -> bytes:
@@ -25,7 +22,7 @@ def to_bytes(format_: str, *args, byte_order: str = '@') -> bytes:
     return struct.pack(f'{byte_order}{format_}', *arguments)
 
 
-def list_to_bytes(format_: str, args: List[VALUE], byte_order: str = '@') -> bytes:
+def list_to_bytes(format_: str, args: Union[Tuple[Any], List[Any]], byte_order: str = '@') -> bytes:
     """
     Pack list of arguments to bytes message.
 
@@ -37,7 +34,7 @@ def list_to_bytes(format_: str, args: List[VALUE], byte_order: str = '@') -> byt
     return to_bytes(format_, *args, byte_order=byte_order)
 
 
-def dict_to_bytes(format_: str, kwargs: Dict[str, VALUE], byte_order: str = '@') -> bytes:
+def dict_to_bytes(format_: str, kwargs: Dict[str, Any], byte_order: str = '@') -> bytes:
     """
     Pack dictionary  to bytes message.
 

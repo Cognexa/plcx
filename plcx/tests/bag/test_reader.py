@@ -5,7 +5,7 @@ from plcx.bag.reader import Reader
 from plcx.utils.boolean import list_to_byte
 
 
-@pytest.mark.parametrize('msg, tag, message_format, byte_order, exp_value', [
+@pytest.mark.parametrize('msg, tag, arguments, byte_order, exp_value', [
     (
         struct.pack('=B3s?', 1, b'abc', False),  # message
         ('B4x', 1),  # message tag
@@ -21,17 +21,17 @@ from plcx.utils.boolean import list_to_byte
         {'i1': 5, 'i2': 4, 'b': True, 'lb': [True, False, True, False, False, False, False, False]}
     )
 ])
-def test_reader(msg, tag, message_format, byte_order, exp_value):
+def test_reader(msg, tag, arguments, byte_order, exp_value):
     """
     Test base behavior of plcx.bag.reader.Reader.
 
     :param msg: bytes message
     :param tag: message tag
-    :param message_format: list of parameters, (<name>, <format>)
+    :param arguments: list of parameters, define as (<name>, <format>)
     :param byte_order: indicate the byte order
     :param exp_value: expected value
     """
-    reader = Reader(tag, message_format, byte_order)
+    reader = Reader(tag, arguments, byte_order)
 
     assert reader.is_readable(msg)
     assert reader.read(msg) == exp_value
