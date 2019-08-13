@@ -12,6 +12,7 @@ def tcp_server():
     def server():
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as soc:
             soc.bind((host, port))
+            soc.settimeout(1)
             soc.listen(1)
 
             while True:
@@ -46,11 +47,11 @@ def tcp_client():
         try_count = 0
         while try_count < 3:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as soc:
+                soc.settimeout(1)
                 # try to make connection
                 try:
                     soc.connect((host, port))  # connect to server
-                except:
-                    time.sleep(.1)
+                except OSError:
                     try_count += 1
                     continue
 
