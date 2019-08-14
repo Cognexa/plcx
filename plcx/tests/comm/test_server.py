@@ -1,5 +1,6 @@
 import asyncio
 import pytest
+import time
 import threading
 
 from plcx.comm.server import serverx
@@ -83,11 +84,10 @@ def test_serverx_try_connect(tcp_client):
 
     thread = StoppableServerThread(host, port, lambda x: b'ok')
     thread.start()
+    time.sleep(0.2) # wait while serve is starting
 
     with pytest.raises(OSError):
-        loop = asyncio.new_event_loop()
-        server_ = loop.create_task(serverx(host, port, lambda x: b'ok', 16, time_out=0.05))
-        loop.run_until_complete(server_)
+        asyncio.run(serverx(host, port, lambda x: b'ok', 16, time_out=0.05))
 
     thread.stop()
     thread.join()

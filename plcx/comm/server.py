@@ -6,7 +6,7 @@ from typing import Callable
 logger = logging.getLogger(__name__)
 
 
-def tcp_read_echo(response_handler: Callable, read_bytes: int = 512, time_out: float = 1) -> asyncio.coroutine:
+def tcp_read_echo(response_handler: Callable, read_bytes: int = 512, time_out: float = .5) -> asyncio.coroutine:
     """
     Read and response to the message from the client.
 
@@ -51,7 +51,7 @@ async def serverx(
         port: int,
         response_handler: Callable,
         read_bytes: int = 512,
-        time_out: float = 1,
+        time_out: float = .5,
         max_try: int = 3
 ) -> asyncio.AbstractServer:
     """
@@ -74,5 +74,5 @@ async def serverx(
             if try_count >= max_try:
                 raise error
 
-            await asyncio.sleep(0.2)  # wait for new try
+            await asyncio.sleep(0.5)  # wait for new try
             continue
