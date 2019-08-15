@@ -65,7 +65,7 @@ def tcp_client():
                     response = soc.recv(read_bytes)  # receive response to message
                     soc.close()  # close server
                 return response
-            except OSError:
+            except (OSError, TimeoutError):
                 try_count += 1
                 continue
 

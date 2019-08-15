@@ -3,10 +3,12 @@ import logging
 
 from typing import Callable
 
+from plcx.constants import MAX_TRY, TIMEOUT
+
 logger = logging.getLogger(__name__)
 
 
-def tcp_read_echo(response_handler: Callable, read_bytes: int = 512, time_out: float = .5) -> asyncio.coroutine:
+def tcp_read_echo(response_handler: Callable, read_bytes: int = 512, time_out: float = TIMEOUT) -> asyncio.coroutine:
     """
     Read and response to the message from the client.
 
@@ -51,8 +53,8 @@ async def serverx(
         port: int,
         response_handler: Callable,
         read_bytes: int = 512,
-        time_out: float = .5,
-        max_try: int = 3
+        time_out: float = TIMEOUT,
+        max_try: int = MAX_TRY,
 ) -> asyncio.AbstractServer:
     """
     Initialized event loop and add server to it.
@@ -69,7 +71,7 @@ async def serverx(
     while True:
         try:
             return await asyncio.start_server(tcp_read_echo(response_handler, read_bytes, time_out), host, port)
-        except OSError as error:
+        except (OSError, asyncio.TimeoutError) as error:
             try_count += 1
             if try_count >= max_try:
                 raise error

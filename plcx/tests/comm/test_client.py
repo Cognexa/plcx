@@ -62,17 +62,17 @@ def test_clientx_error(tcp_server):
     loop = asyncio.get_event_loop()
 
     # testing connection to port 0
-    with pytest.raises(OSError):
+    with pytest.raises((OSError, asyncio.TimeoutError)):
         loop.run_until_complete(clientx(host, 0, b'', 1))
 
     # testing connection to not exist port
-    with pytest.raises(OSError):
+    with pytest.raises((OSError, asyncio.TimeoutError)):
         loop.run_until_complete(clientx(host, 65432, b'', 1))
 
     # testing connection to not exist address
-    with pytest.raises(OSError):
+    with pytest.raises((OSError, asyncio.TimeoutError)):
         loop.run_until_complete(clientx('hola', port, b'', 1))
 
     # testing time out
-    with pytest.raises(asyncio.TimeoutError):
+    with pytest.raises((OSError, asyncio.TimeoutError)):
         loop.run_until_complete(clientx(host, port, b'123', 16, .005))
