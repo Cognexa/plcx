@@ -29,7 +29,7 @@ def tcp_server():
                         time.sleep(0.05)  # wait to response
                         conn.sendall(f'received:{message.decode()!r}'.encode())
                     conn.close()
-                except:
+                except (OSError, TimeoutError):
                     continue
 
     thread = threading.Thread(target=server, name='server')
