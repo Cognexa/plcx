@@ -2,7 +2,7 @@ import asyncio
 import logging
 
 from dataclasses import dataclass
-from typing import Tuple
+from typing import Optional, Tuple
 
 from plcx.constants import MAX_TRY, TIMEOUT
 
@@ -44,7 +44,6 @@ async def clientx(
         response_bytes: int = 0,  # zero means no response
         time_out: float = TIMEOUT,
         max_try: int = MAX_TRY,
-
 ) -> bytes:
     """
     Send message to server.
@@ -76,14 +75,17 @@ async def clientx(
 class ClientX:
     host: str
     port: int
+    response_bytes: int = 0
+    time_out: float = TIMEOUT
+    max_try: int = MAX_TRY
 
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *args, **kwargs):
-        return True
-
-    def send(self, message: bytes, response_bytes: int = 0, time_out: float = TIMEOUT, max_try: int = MAX_TRY) -> bytes:
+    def send(
+            self,
+            message: bytes,
+            response_bytes: Optional[int] = None,
+            time_out: Optional[float] = None,
+            max_try: Optional[int] = None
+    ) -> bytes:
         """
         Send message.
 
@@ -96,4 +98,13 @@ class ClientX:
         logger.debug(f'try send message with client to `{self.host}:{self.port}`')
 
         loop = asyncio.get_event_loop()
-        return loop.run_until_complete(clientx(self.host, self.port, message, response_bytes, time_out, max_try))
+        return loop.run_until_complete(
+            clientx(
+                self.host,
+                self.port,
+                message,
+                response_bytes or self.response_bytes,
+                time_out or self.time_out,
+                max_try or self.max_try,
+            )
+        )

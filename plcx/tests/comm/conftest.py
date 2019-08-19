@@ -35,6 +35,7 @@ def tcp_server():
     thread = threading.Thread(target=server, name='server')
     thread.daemon = True
     thread.start()
+
     yield host, port
 
 
