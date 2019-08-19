@@ -58,7 +58,7 @@ async def clientx(
     :return:
     """
     # open connection with timeout
-    reader, writer = await connect(host, port, time_out, max_try)
+    reader, writer = await connect(host=host, port=port, time_out=time_out, max_try=max_try)
 
     # send message to server
     writer.write(message)

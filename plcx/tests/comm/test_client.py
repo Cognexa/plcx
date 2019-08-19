@@ -15,8 +15,10 @@ def test_clientx(tcp_server, msg):
     host, port = tcp_server
     loop = asyncio.get_event_loop()
 
-    assert loop.run_until_complete(clientx(host, port, msg, 512)).decode() == f"received:'{msg.decode()}'"
-    assert loop.run_until_complete(clientx(host, port, b'control message', 512)) == b"received:'control message'"
+    assert loop.run_until_complete(clientx(host, port, msg, 512, time_out=2)).decode() == f"received:'{msg.decode()}'"
+    assert loop.run_until_complete(
+        clientx(host, port, b'control message', 512, time_out=2)
+    ) == b"received:'control message'"
 
 
 @pytest.mark.parametrize('msg', ['1', '123', 'hola'])
@@ -63,16 +65,16 @@ def test_clientx_error(tcp_server):
 
     # testing connection to port 0
     with pytest.raises((OSError, asyncio.TimeoutError)):
-        loop.run_until_complete(clientx(host, 0, b'', 1))
+        loop.run_until_complete(clientx(host, 0, b'', 1, max_try=1))
 
     # testing connection to not exist port
     with pytest.raises((OSError, asyncio.TimeoutError)):
-        loop.run_until_complete(clientx(host, 65432, b'', 1))
+        loop.run_until_complete(clientx(host, 65432, b'', 1, max_try=1))
 
     # testing connection to not exist address
     with pytest.raises((OSError, asyncio.TimeoutError)):
-        loop.run_until_complete(clientx('hola', port, b'', 1))
+        loop.run_until_complete(clientx('hola', port, b'', 1, max_try=1))
 
     # testing time out
     with pytest.raises((OSError, asyncio.TimeoutError)):
-        loop.run_until_complete(clientx(host, port, b'123', 16, .005))
+        loop.run_until_complete(clientx(host, port, b'123', 16, time_out=.005, max_try=1))
