@@ -26,7 +26,7 @@ class Reader:
         try:
             value = bytes_to_list(message, format_, self.byte_order)[0]
         except struct.error:
-            logger.debug(f'Reader try to read `{message}`.')
+            logger.debug(f'Error while reading message `{message}`.')
             return False
         else:
             logger.debug(f'Reader read tag value `{value}` and expected `{exp_value}`.')

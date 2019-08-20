@@ -1,69 +1,109 @@
 import asyncio
+import logging
 
-from typing import Optional
+from dataclasses import dataclass
+from typing import Optional, Tuple
+
+from plcx.constants import MAX_TRY, TIMEOUT
+
+logger = logging.getLogger(__name__)
 
 
-async def tcp_send_echo(
-        message: bytes,
+async def connect(
         host: str,
         port: int,
-        loop: Optional[asyncio.AbstractEventLoop] = None,
-        response_bytes: int = 0,
-        time_out: float = 1
+        time_out: float = TIMEOUT,
+        max_try: int = MAX_TRY,
+) -> Tuple[asyncio.streams.StreamReader, asyncio.streams.StreamWriter]:
+    """
+    Create connection to server.
 
+    :param host: host url or ip
+    :param port: host port
+    :param time_out: waiting time out, use in connection and reading response [.5 second]
+    :param max_try: maximum attention to create server [3 times]
+    :return:
+    """
+    try_count = 0
+    while True:
+        try:
+            return await asyncio.wait_for(asyncio.open_connection(host=host, port=port), timeout=time_out)
+        except (OSError, asyncio.TimeoutError) as error:
+            try_count += 1
+            if try_count >= max_try:
+                raise error
+
+            await asyncio.sleep(0.2)  # wait for new try
+
+
+async def clientx(
+        host: str,
+        port: int,
+        message: bytes,
+        response_bytes: int = 0,  # zero means no response
+        time_out: float = TIMEOUT,
+        max_try: int = MAX_TRY,
 ) -> bytes:
     """
     Send message to server.
 
-    :param message: bytes message
     :param host: host url or ip
     :param port: host port
-    :param loop: asyncio event loop
+    :param message: bytes message
     :param response_bytes: max number of bytes to read [0 == empty response]
-    :param time_out: waiting time out, use in connection and reading response [1 second]
+    :param time_out: waiting time out, use in connection and reading response [.5 second]
+    :param max_try: maximum attention to create server [3 times]
     :return:
     """
     # open connection with timeout
-    reader, writer = await asyncio.wait_for(asyncio.open_connection(host=host, port=port, loop=loop), timeout=time_out)
+    reader, writer = await connect(host=host, port=port, time_out=time_out, max_try=max_try)
+
     # send message to server
     writer.write(message)
+
     # get response with timeout
     response = await asyncio.wait_for(reader.read(response_bytes), timeout=time_out)
+
     # close connection
     writer.close()
+
     return response
 
 
-class clientx:
-    def __init__(self, host: str, port: int):
-        """
-        Initialized client.
+@dataclass
+class ClientX:
+    host: str
+    port: int
+    response_bytes: int = 0
+    time_out: float = TIMEOUT
+    max_try: int = MAX_TRY
 
-        :param host: server host name or ip
-        :param port: server port
-        """
-        self.host = host
-        self.port = port
-        self.loop = asyncio.new_event_loop()
-
-    def __enter__(self):
-        if not self.loop.is_running() or self.loop.is_closed():
-            self.loop = asyncio.new_event_loop()
-        return self
-
-    def __exit__(self, *exc):
-        self.loop.stop()
-        self.loop.close()
-
-    def send(self, message: bytes, response_bytes: int = 0, time_out: float = 1) -> bytes:
+    def send(
+            self,
+            message: bytes,
+            response_bytes: Optional[int] = None,
+            time_out: Optional[float] = None,
+            max_try: Optional[int] = None
+    ) -> bytes:
         """
         Send message.
 
         :param message: bytes massage
         :param response_bytes: max number of bytes to read [0 == empty response]
-        :param time_out: waiting time out, use in connection and reading response
+        :param time_out: waiting time out, use in connection and reading response [.5 second]
+        :param max_try: maximum attention to create server [3 times]
         :return: response bytes message or None
         """
-        return self.loop.run_until_complete(
-            tcp_send_echo(message, self.host, self.port, self.loop, response_bytes, time_out)
+        logger.debug(f'try send message with client to `{self.host}:{self.port}`')
+
+        loop = asyncio.get_event_loop()
+        return loop.run_until_complete(
+            clientx(
+                self.host,
+                self.port,
+                message,
+                response_bytes or self.response_bytes,
+                time_out or self.time_out,
+                max_try or self.max_try,
+            )
         )

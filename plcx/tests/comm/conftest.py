@@ -3,15 +3,20 @@ import pytest
 import time
 import threading
 
+PORT = 33888
+
 
 @pytest.fixture(scope='session')
 def tcp_server():
     """Run testing tcp server."""
-    host, port = 'localhost', 33888
+    global PORT
+    host, port = 'localhost', PORT
+    PORT += 1
 
     def server():
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as soc:
             soc.bind((host, port))
+            soc.settimeout(.5)
             soc.listen(1)
 
             while True:
@@ -24,19 +29,22 @@ def tcp_server():
                         time.sleep(0.05)  # wait to response
                         conn.sendall(f'received:{message.decode()!r}'.encode())
                     conn.close()
-                except ConnectionResetError:
-                    pass
+                except (OSError, TimeoutError):
+                    continue
 
     thread = threading.Thread(target=server, name='server')
     thread.daemon = True
     thread.start()
+
     yield host, port
 
 
 @pytest.fixture
 def tcp_client():
     """Return function to send message to server."""
-    host, port = 'localhost', 33889
+    global PORT
+    host, port = 'localhost', PORT
+    PORT += 1
 
     def client(message: bytes, read_bytes: int = 0) -> bytes:
         """
@@ -48,18 +56,18 @@ def tcp_client():
         """
         try_count = 0
         while try_count < 3:
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as soc:
-                # try to make connection
-                try:
+            try:
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as soc:
+                    soc.settimeout(.5)
+                    # try to make connection
                     soc.connect((host, port))  # connect to server
-                except:
-                    time.sleep(.1)
-                    try_count += 1
-                    continue
 
-                soc.send(message)  # send message
-                response = soc.recv(read_bytes)  # receive response to message
-                soc.close()  # close server
-            return response
+                    soc.send(message)  # send message
+                    response = soc.recv(read_bytes)  # receive response to message
+                    soc.close()  # close server
+                return response
+            except (OSError, TimeoutError):
+                try_count += 1
+                continue
 
     yield host, port, client
