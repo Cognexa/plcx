@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import pytest
 import time
 import threading
@@ -12,11 +13,12 @@ class StoppableServerThread(threading.Thread):
     regularly for the stopped() condition.
     """
 
-    def __init__(self, host, port, echo_handler):
+    def __init__(self, host, port, echo_handler, max_try=5):
         super(StoppableServerThread, self).__init__()
         self._stop_event = threading.Event()
         self.host = host
         self.port = port
+        self.max_try = max_try
         self.echo_handler = echo_handler
 
     def stop(self):
@@ -37,7 +39,9 @@ class StoppableServerThread(threading.Thread):
         asyncio.set_event_loop(loop)
 
         # define tasks
-        server_ = loop.create_task(serverx(self.host, self.port, self.echo_handler, 16, time_out=0.05, max_try=5))
+        server_ = loop.create_task(
+            serverx(self.host, self.port, self.echo_handler, 16, time_out=0.05, max_try=self.max_try)
+        )
         killer_ = loop.create_task(killer(self, server_))
 
         # run tasks
@@ -101,24 +105,30 @@ def not_arg_handler():
     pass
 
 
-@pytest.mark.parametrize("handler, exp_message", [
-    (raise_handler, b'TimeoutError'),
-    (not_arg_handler, b'TypeError')
+@pytest.mark.parametrize("handler, exp_error", [
+    (raise_handler, TimeoutError),
+    (not_arg_handler, TypeError)
 ])
-def test_serverx_error(tcp_client, handler, exp_message):
+def test_serverx_error(tcp_client, caplog, handler, exp_error):
     """
     Test raising error of serverx.
 
     :param tcp_client: function for send message to server
+    :param caplog: capture logs
     :param handler: echo handler
-    :param exp_message: expected message form server
+    :param exp_error: expected error
     """
     host, port, client = tcp_client
 
-    thread = StoppableServerThread(host, port, handler)
+    thread = StoppableServerThread(host, port, handler, max_try=1)
     thread.start()
+    time.sleep(0.2)  # wait while serve is starting
 
-    assert client(b'test', 32) == exp_message
+
+    with caplog.at_level(logging.ERROR, logger="plcx.comm.server"):
+        assert client(b'test', 4) == None
+        assert all([record.name == "plcx.comm.server" for record in caplog.records if record.filename == 'server.py'])
+        assert all([issubclass(record.exc_info[0], exp_error) for record in caplog.records if record.filename == 'base_events.py'])
 
     thread.stop()
     thread.join()

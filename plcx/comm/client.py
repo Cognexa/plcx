@@ -34,7 +34,6 @@ async def connect(
                 raise error
 
             await asyncio.sleep(0.2)  # wait for new try
-            continue
 
 
 async def clientx(
