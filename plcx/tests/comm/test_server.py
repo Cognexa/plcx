@@ -124,11 +124,16 @@ def test_serverx_error(tcp_client, caplog, handler, exp_error):
     thread.start()
     time.sleep(0.2)  # wait while serve is starting
 
-
     with caplog.at_level(logging.ERROR, logger="plcx.comm.server"):
-        assert client(b'test', 4) == None
+        assert client(b'test', 4) is None
+
         assert all([record.name == "plcx.comm.server" for record in caplog.records if record.filename == 'server.py'])
-        assert all([issubclass(record.exc_info[0], exp_error) for record in caplog.records if record.filename == 'base_events.py'])
+        assert all(
+            [
+                issubclass(record.exc_info[0], exp_error)
+                for record in caplog.records if record.filename == 'base_events.py'
+            ]
+        )
 
     thread.stop()
     thread.join()
