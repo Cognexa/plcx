@@ -7,8 +7,8 @@ from plcx.bag.pack import to_bytes, dict_to_bytes, list_to_bytes
     ('i', (100, ), b'd\x00\x00\x00', 4),
     ('i3s?', (100, b'abc', False, ), b'd\x00\x00\x00abc\x00', 8),
     ('i3s?xx', (100, b'abc', False, ), b'd\x00\x00\x00abc\x00\x00\x00', 10),
-    ('b@', (100, [1, 0, 1], ), b'd\xa0', 2),
-    ('@', ([True] + 7*[False], ), b'\x80', 1)
+    ('b#', (100, [1, 0, 1], ), b'd\xa0', 2),
+    ('#', ([True] + 7*[False], ), b'\x80', 1)
 ])
 def test_to_bytes(format_, values, exp_value, exp_len):
     """

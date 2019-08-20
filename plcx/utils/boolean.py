@@ -7,13 +7,14 @@ from plcx.utils.find import find_all
 
 def find_boolean_format(format_: str) -> Tuple[str, List[int]]:
     """
-    Find symbol `@` representing byte to list of boolean values conversion.
+    Find symbol `#` representing byte to list of boolean values conversion.
     Convert format to format string for struct.pack.
 
     :param format_: message format
-    :return: tuple with edited format string and list of positions of character '@'
+    :return: tuple with edited format string and list of positions of character '#'
     """
-    return format_.replace('@', 'c'), find_all(format_, '@')
+    indexes = ''.join([f for f in format_ if not f.isdigit() and 'x' not in f])
+    return format_.replace('#', 'c'), find_all(indexes, '#')
 
 
 def byte_to_list(byte: bytes) -> List[bool]:
