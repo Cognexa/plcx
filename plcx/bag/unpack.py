@@ -1,10 +1,10 @@
 import struct
 
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from plcx.constants import BYTE_ORDER
 from plcx.utils.boolean import find_boolean_format, byte_to_booleans
-from plcx.utils.find import start_with_integer
+from plcx.utils.find import find_first_integer
 
 
 VALUE = Union[str, int, float, bool, List[bool]]
@@ -30,7 +30,11 @@ def bytes_to_list(msg: bytes, format_: str, byte_order: str = BYTE_ORDER) -> Lis
     return [byte_to_booleans(r) if i in indexes else r for i, r in enumerate(result)]
 
 
-def bytes_to_dict(msg: bytes, config: List[Tuple[str, str]], byte_order: str = BYTE_ORDER) -> Dict[str, VALUE]:
+def bytes_to_dict(
+        msg: bytes,
+        config: List[Tuple[Optional[str], str]],
+        byte_order: str = BYTE_ORDER
+) -> Dict[str, VALUE]:
     """
     Unpack bytes with define format to dictionary.
 
@@ -40,7 +44,7 @@ def bytes_to_dict(msg: bytes, config: List[Tuple[str, str]], byte_order: str = B
     :return: dictionary with parameters name as keys and values as values
     """
     keys = [name for name, format_ in config if 'x' not in format_]
-    counts = [start_with_integer(format_) for _, format_ in config if 'x' not in format_]
+    counts = [find_first_integer(format_) for _, format_ in config if 'x' not in format_]
     values = bytes_to_list(msg=msg, format_=''.join([f for _, f in config]), byte_order=byte_order)
     # convert args to one arg
     values = [

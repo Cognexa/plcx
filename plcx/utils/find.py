@@ -12,9 +12,9 @@ def find_all(text: str, symbol: str) -> List[int]:
     return [i for i, s in enumerate(text) if s == symbol]
 
 
-def start_with_integer(text: str, default: int = 1) -> int:
+def find_first_integer(text: str, default: int = 1) -> int:
     """
-    Find out if text start with integer and extract it.
+    Find first integer in text or return default.
 
     :param text: text
     :param default: default integer if none is found [1]
@@ -24,6 +24,6 @@ def start_with_integer(text: str, default: int = 1) -> int:
     for c in text:
         if c.isdigit():
             result += c
-        else:
+        elif result:
             break
     return int(result or default)

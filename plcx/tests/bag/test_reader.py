@@ -10,7 +10,7 @@ from plcx.utils.boolean import list_to_byte
         struct.pack('=B3s?', 1, b'abc', False),  # message
         ('B4x', 1),  # message tag
         [(None, 'x'), ('t1', '3s'), ('t2', '?')],  # message format
-        '@',
+        '=',
         {'t1': b'abc', 't2': False}  # expected value
     ), (
         struct.pack('=''s''2s''i''i''?''c', b'p', b'ab', 5, 4, True, list_to_byte([True, False, True])),
@@ -18,6 +18,12 @@ from plcx.utils.boolean import list_to_byte
         [(None, 'x'), (None, '2x'), ('i1', 'i'), ('i2', 'i'), ('b', '?'), ('lb', '#')],
         '=',
         {'i1': 5, 'i2': 4, 'b': True, 'lb': [True, False, True, False, False, False, False, False]}
+    ), (
+        struct.pack('=2sx2s2i', b'tt', b'ab', 5, 4),
+        ('2s11x', b'tt'),
+        [(None, '3x'), ('text', '2s'), ('integers', '2i')],
+        '=',
+        {'text': b'ab', 'integers': [5, 4]}
     )
 ])
 def test_reader(msg, tag, arguments, byte_order, exp_value):
@@ -32,6 +38,8 @@ def test_reader(msg, tag, arguments, byte_order, exp_value):
     """
     reader = Reader(tag, arguments, byte_order)
 
+    print(reader.read(msg))
+
     assert reader.is_readable(msg)
     assert reader.read(msg) == exp_value
 
@@ -42,7 +50,7 @@ def test_reader(msg, tag, arguments, byte_order, exp_value):
     (struct.pack('=''2s''c', b'ab', list_to_byte([True, False, True])), ('sx', b'a'), '=', False),
     (struct.pack('=''2s''c', b'ab', list_to_byte([True, False, True])), ('s2x', b'a'), '=', True)
 ])
-def test_reader_not_readable(msg, tag, byte_order, is_readable):
+def test_reader_message_not_readable(msg, tag, byte_order, is_readable):
     """
     Test Reader tes message readability.
 

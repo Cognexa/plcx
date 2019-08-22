@@ -1,6 +1,6 @@
 import pytest
 
-from plcx.utils.find import find_all, start_with_integer
+from plcx.utils.find import find_all, find_first_integer
 
 
 @pytest.mark.parametrize('text, symbol, exp_indexes', [
@@ -21,13 +21,14 @@ def test_find_all(text, symbol, exp_indexes):
 @pytest.mark.parametrize("text, exp_integer", [
     ("2a2b", 2),
     ("32a5", 32),
-    ("abc", 1)
+    ("abc", 1),
+    ("x22abc", 22)
 ])
-def test_start_with_integer(text, exp_integer):
+def test_find_first_integer(text, exp_integer):
     """
-    Test start with integer function, which find out if text start with integer.
+    Test finding first integer in text.
 
     :param text: text
     :param exp_integer: expected integer
     """
-    assert start_with_integer(text) == exp_integer
+    assert find_first_integer(text) == exp_integer
