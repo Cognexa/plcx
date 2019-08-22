@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Tuple, Union
 
 from plcx.constants import BYTE_ORDER
 from plcx.utils.boolean import find_boolean_format, byte_to_booleans
-from plcx.utils.find import find_first_integer
+from plcx.utils.find import find_first_integer, remove_number
 
 
 VALUE = Union[str, int, float, bool, List[bool]]
@@ -43,8 +43,8 @@ def bytes_to_dict(
     :param byte_order: indicate the byte order
     :return: dictionary with parameters name as keys and values as values
     """
-    keys = [name for name, format_ in config if 'x' not in format_]
-    counts = [find_first_integer(format_) for _, format_ in config if 'x' not in format_]
+    keys = [name for name, format_ in config if 'x' != remove_number(format_)]
+    counts = [find_first_integer(format_) for _, format_ in config if 'x' != remove_number(format_)]
     values = bytes_to_list(msg=msg, format_=''.join([f for _, f in config]), byte_order=byte_order)
     # convert args to one arg
     values = [

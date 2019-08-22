@@ -27,3 +27,13 @@ def find_first_integer(text: str, default: int = 1) -> int:
         elif result:
             break
     return int(result or default)
+
+
+def remove_number(text: str) -> str:
+    """
+    Remove number from sting.
+
+    :param text: text
+    :return: text without integers
+    """
+    return ''.join([c for c in text if not c.isdigit()])
