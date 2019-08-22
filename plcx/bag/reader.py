@@ -2,8 +2,9 @@ import logging
 import struct
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
+from plcx.constants import BYTE_ORDER
 from plcx.bag.unpack import bytes_to_list, bytes_to_dict
 
 logger = logging.getLogger(__name__)
@@ -12,8 +13,8 @@ logger = logging.getLogger(__name__)
 @dataclass
 class Reader:
     tag: Tuple[str, Any]  # (<format>, <value>)
-    arguments: List[Tuple[str, str]]  # (<name>, <format>)
-    byte_order: str = '@'
+    arguments: List[Tuple[Optional[str], str]]  # (<name>, <format>)
+    byte_order: str = BYTE_ORDER
 
     def is_readable(self, message: bytes) -> bool:
         """

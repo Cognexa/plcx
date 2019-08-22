@@ -21,6 +21,8 @@ from plcx.bag.writer import Writer
     ),
     ({'a': 5, 'b': b'a'}, ('i', 101), [('a', 'i'), ('b', 's')], '=', b'e\x00\x00\x00\x05\x00\x00\x00a'),
     ({'a': 5, 'b': b'a'}, ('i', 101), [('a', 'i'), ('b', 's')], '@', b'e\x00\x00\x00\x05\x00\x00\x00a'),
+    ({'a': 5}, ('c', b'S'), [(None, 'x'), ('a', 'i')], '@', b'S\x00\x00\x00\x05\x00\x00\x00'),
+    ({'a': [1, 2]}, ('c', b'S'), [(None, 'x'), ('a', '2i')], '@', b'S\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00'),
 ])
 def test_write(kwargs, tag, arguments, byte_order, exp_value):
     """

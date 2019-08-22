@@ -6,12 +6,13 @@ from plcx.bag.unpack import bytes_to_list, bytes_to_dict
 
 
 @pytest.mark.parametrize('msg, format_, exp_value', [
-    (struct.pack('i', 100), 'i', [100]),
-    (struct.pack('B', 100) + int('00100100', 2).to_bytes(1, 'little'), 'B''#', [100, [0, 0, 1, 0, 0, 1, 0, 0]]),
-    (struct.pack('ibBc', 28888, -16, 32, b'$'), 'i''b''B''#', [28888, -16, 32, [0, 0, 1, 0, 0, 1, 0, 0]]),
-    (struct.pack('ibBc', 28888, -16, 32, b'$'), 'ixxx', [28888]),
-    (struct.pack('s', b'abcdefgh'), 'c', [b'a']),
-    (struct.pack('x3s', b'abc'), 'x3s', [b'abc'])
+    (struct.pack('=i', 100), 'i', [100]),
+    (struct.pack('=B', 100) + int('00100100', 2).to_bytes(1, 'little'), 'B''#', [100, [0, 0, 1, 0, 0, 1, 0, 0]]),
+    (struct.pack('=ibBc', 28888, -16, 32, b'$'), 'i''b''B''#', [28888, -16, 32, [0, 0, 1, 0, 0, 1, 0, 0]]),
+    (struct.pack('=ibBc', 28888, -16, 32, b'$'), 'ixxx', [28888]),
+    (struct.pack('=s', b'abcdefgh'), 'c', [b'a']),
+    (struct.pack('=x3s', b'abc'), 'x3s', [b'abc']),
+    (struct.pack('=cx3i', b'a', 2, 3, 4), 'cx3i', [b'a', 2, 3, 4])
 ])
 def test_bytes_to_list(msg, format_, exp_value):
     """
@@ -48,19 +49,22 @@ def test_bytes_to_list_error(msg, format_, error):
         [('t1', 'i'), ('t2', 'l')],
         {'t1': 100, 't2': 100},
         '@'
-    ),
-    (
+    ), (
         struct.pack('xil', 100, 100),
         [(None, 'x'), ('t1', 'i'), ('t2', 'l')],
         {'t1': 100, 't2': 100},
         '@'
-    ),
-    (
+    ), (
         struct.pack('=''s''2s''i''i''c', b'p', b'ab', 5, 4, b'$'),
         [(None, '3x'), ('i1', 'i'), ('i2', 'i'), ('bl', '#')],
         {'i1': 5, 'i2': 4, 'bl': [0, 0, 1, 0, 0, 1, 0, 0]},
         '='
-    )
+    ), (
+        struct.pack('x3i3s', 1, 2, 3, b'abc'),
+        [(None, 'x'), ('int', '3i'), ('text', '3s')],
+        {'int': [1, 2, 3], 'text': b'abc'},
+        '@'
+    ),
 ])
 def test_bytes_to_dict(msg, config, exp_value, byte_order):
     """
