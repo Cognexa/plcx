@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
 
 from plcx.constants import BYTE_ORDER
-from plcx.bag.unpack import bytes_to_list, bytes_to_dict
+from plcx.bag.unpack import bytes_to_dict
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +16,16 @@ class Reader:
     arguments: List[Tuple[Optional[str], str]]  # (<name>, <format>)
     byte_order: str = BYTE_ORDER
 
+    def _read(self, message: bytes) -> Dict[str, Any]:
+        """
+        Unpack message to dictionary.
+
+        :param message: bytes message
+        :return: dictionary with parameters
+        """
+        tag_format, _ = self.tag
+        return bytes_to_dict(message, [('tag', tag_format)] + self.arguments, self.byte_order)
+
     def is_readable(self, message: bytes) -> bool:
         """
         Test if reader could read message.
@@ -23,9 +33,9 @@ class Reader:
         :param message: bytes message
         :return: bool value
         """
-        format_, exp_value = self.tag
+        _, exp_value = self.tag
         try:
-            value = bytes_to_list(message, format_, self.byte_order)[0]
+            value = self._read(message).get('tag', None)
         except struct.error:
             logger.debug(f'Error while reading message `{message}`.')
             return False
@@ -40,4 +50,6 @@ class Reader:
         :param message: bytes message
         :return: dictionary with parameters
         """
-        return bytes_to_dict(message, self.arguments, self.byte_order)
+        response = self._read(message)
+        _ = response.pop('tag')  # remove tag from output
+        return response

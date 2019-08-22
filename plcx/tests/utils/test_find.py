@@ -1,6 +1,6 @@
 import pytest
 
-from plcx.utils.find import find_all, find_first_integer
+from plcx.utils.find import find_all, find_first_integer, remove_number
 
 
 @pytest.mark.parametrize('text, symbol, exp_indexes', [
@@ -32,3 +32,17 @@ def test_find_first_integer(text, exp_integer):
     :param exp_integer: expected integer
     """
     assert find_first_integer(text) == exp_integer
+
+
+@pytest.mark.parametrize("text, exp_text", [
+    ("1x2s", "xs"),
+    ("111ssx", "ssx")
+])
+def test_remove_number(text, exp_text):
+    """
+    Test removing numbers from text.
+
+    :param text: text
+    :param exp_text: expected text
+    """
+    assert remove_number(text) == exp_text

@@ -23,8 +23,6 @@ def test_to_bytes(format_, values, exp_value, exp_len):
     """
     message = to_bytes(format_, *values)
 
-    print(message)
-
     assert len(message) == exp_len
     assert message == exp_value
 
