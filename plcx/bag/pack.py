@@ -41,7 +41,7 @@ def to_bytes(format_: str, *args, byte_order: str = BYTE_ORDER) -> bytes:
     return struct.pack(f'{byte_order}{format_}', *arguments)
 
 
-def list_to_bytes(format_: str, args: Union[Tuple[Any], List[Any]], byte_order: str = BYTE_ORDER) -> bytes:
+def boolean_to_bytes(format_: str, args: Union[Tuple[Any], List[Any]], byte_order: str = BYTE_ORDER) -> bytes:
     """
     Pack list of arguments to bytes message.
 
