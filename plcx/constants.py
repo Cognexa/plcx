@@ -3,3 +3,6 @@ TIMEOUT = .5
 
 MAX_TRY = 3
 """Default maximum number of attempts."""
+
+BYTE_ORDER = "="
+"""Default byte order in pack and unpack bytest function."""

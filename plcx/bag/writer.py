@@ -3,6 +3,7 @@ import logging
 from dataclasses import dataclass
 from typing import Any, List, Tuple
 
+from plcx.constants import BYTE_ORDER
 from plcx.bag.pack import list_to_bytes
 
 logger = logging.getLogger(__name__)
@@ -12,7 +13,7 @@ logger = logging.getLogger(__name__)
 class Writer:
     tag: Tuple[str, Any]  # (<format>, <value>)
     arguments: List[Tuple[str, str]]  # (<name>, <format>)
-    byte_order: str = '@'
+    byte_order: str = BYTE_ORDER
 
     def write(self, **kwargs) -> bytes:
         """

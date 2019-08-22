@@ -12,8 +12,7 @@ from plcx.utils.boolean import list_to_byte
         [(None, 'x'), ('t1', '3s'), ('t2', '?')],  # message format
         '@',
         {'t1': b'abc', 't2': False}  # expected value
-    ),
-    (
+    ), (
         struct.pack('=''s''2s''i''i''?''c', b'p', b'ab', 5, 4, True, list_to_byte([True, False, True])),
         ('x2s10x', b'ab'),
         [(None, 'x'), (None, '2x'), ('i1', 'i'), ('i2', 'i'), ('b', '?'), ('lb', '#')],

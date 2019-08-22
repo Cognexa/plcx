@@ -17,7 +17,7 @@ def find_boolean_format(format_: str) -> Tuple[str, List[int]]:
     return format_.replace('#', 'c'), find_all(indexes, '#')
 
 
-def byte_to_list(byte: bytes) -> List[bool]:
+def byte_to_booleans(byte: bytes) -> List[bool]:
     """
     Convert byte to list of booleans.
 
