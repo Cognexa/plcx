@@ -23,7 +23,7 @@ def bytes_to_list(msg: bytes, format_: str, byte_order: str = BYTE_ORDER) -> Lis
         raise TypeError('Got unexpected type of message.')
 
     # count character in format
-    count_format = args_counts(format_)
+    arguments_count = args_counts(format_)
 
     # unpack bytes to tuple
     plcx_format = format_.replace(BOOLEAN_FORMAT_SYMBOL, 's')
@@ -31,10 +31,8 @@ def bytes_to_list(msg: bytes, format_: str, byte_order: str = BYTE_ORDER) -> Lis
 
     # group arguments and convert to boolean list
     bytes_list = []
-    for c, count in count_format:
-        if c == 'x':
-            pass  # skip pad bytes
-        elif c == BOOLEAN_FORMAT_SYMBOL:
+    for c, count in arguments_count:
+        if c == BOOLEAN_FORMAT_SYMBOL:
             boolean_list = byte_to_booleans(arguments.pop(0))
             bytes_list.append(boolean_list[0] if len(boolean_list) == 1 else boolean_list)
         elif count == 1 or c in ['c', 's']:
