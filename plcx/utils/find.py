@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 
 def find_all(text: str, symbol: str) -> List[int]:
@@ -12,23 +12,6 @@ def find_all(text: str, symbol: str) -> List[int]:
     return [i for i, s in enumerate(text) if s == symbol]
 
 
-def find_first_integer(text: str, default: int = 1) -> int:
-    """
-    Find first integer in text or return default.
-
-    :param text: text
-    :param default: default integer if none is found [1]
-    :return: first integer in text or default value
-    """
-    result = ''
-    for c in text:
-        if c.isdigit():
-            result += c
-        elif result:
-            break
-    return int(result or default)
-
-
 def remove_number(text: str) -> str:
     """
     Remove number from sting.
@@ -37,3 +20,29 @@ def remove_number(text: str) -> str:
     :return: text without integers
     """
     return ''.join([c for c in text if not c.isdigit()])
+
+
+def find_count(format_: str) -> int:
+    """
+    Find count of character.
+
+    :param format_: bytes message format
+    :return: count of character
+    """
+    result = ''
+    for c in format_[::-1]:
+        if not c.isdigit():
+            break
+        result += c
+
+    return int(result[::-1] or '1')
+
+
+def find_counts(format_: str) -> List[Tuple[str, int]]:
+    """
+    Find count of character in bytes message format.
+
+    :param format_: bytes message format
+    :return: list of tuples contain character and count
+    """
+    return [(c, find_count(format_[:i])) for i, c in enumerate(format_) if not c.isdigit()]

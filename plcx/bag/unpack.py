@@ -3,8 +3,8 @@ import struct
 from typing import Dict, List, Optional, Tuple, Union
 
 from plcx.constants import BYTE_ORDER
-from plcx.utils.boolean import find_boolean_format, byte_to_booleans
-from plcx.utils.find import find_first_integer, remove_number
+from plcx.utils.boolean import byte_to_booleans, BOOLEAN_FORMAT_SYMBOL
+from plcx.utils.find import remove_number, find_counts
 
 
 VALUE = Union[str, int, float, bool, List[bool]]
@@ -22,14 +22,25 @@ def bytes_to_list(msg: bytes, format_: str, byte_order: str = BYTE_ORDER) -> Lis
     if not isinstance(msg, bytes):
         raise TypeError('Got unexpected type of message.')
 
-    # find all defined boolean list in format
-    format_, indexes = find_boolean_format(format_)
+    # count character in format
+    count_format = find_counts(format_)
+
     # unpack bytes to tuple
-    arguments = struct.unpack(f'{byte_order}{format_}', msg)
-    # convert one byte character to boolean list
+    plcx_format = format_.replace(BOOLEAN_FORMAT_SYMBOL, 's')
+    arguments = list(struct.unpack(f'{byte_order}{plcx_format}', msg))
+
+    # group arguments and convert to boolean list
     bytes_list = []
-    for i, arg in enumerate(arguments):
-        bytes_list += byte_to_booleans(arg) if i in indexes else (arg, )
+    for c, count in count_format:
+        if c == 'x':
+            pass  # skip pad bytes
+        elif c == BOOLEAN_FORMAT_SYMBOL:
+            boolean_list = byte_to_booleans(arguments.pop(0))
+            bytes_list.append(boolean_list[0] if len(boolean_list) == 1 else boolean_list)
+        elif count == 1 or c in ['c', 's']:
+            bytes_list.append(arguments.pop(0))
+        else:
+            bytes_list.append([arguments.pop(0) for _ in range(count)])
 
     return bytes_list
 
@@ -48,11 +59,5 @@ def bytes_to_dict(
     :return: dictionary with parameters name as keys and values as values
     """
     keys = [name for name, format_ in config if 'x' != remove_number(format_)]
-    counts = [find_first_integer(format_) for _, format_ in config if 'x' != remove_number(format_)]
     values = bytes_to_list(msg=msg, format_=''.join([f for _, f in config]), byte_order=byte_order)
-    # convert args to one arg
-    values = [
-        values.pop(0) if count == 1 or isinstance(values[0], bytes) else [values.pop(0) for _ in range(count)]
-        for count in counts
-    ]
     return dict(zip(keys, values))

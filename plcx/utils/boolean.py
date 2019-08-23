@@ -20,19 +20,15 @@ def find_boolean_format(format_: str) -> Tuple[str, List[int]]:
     return format_.replace(BOOLEAN_FORMAT_SYMBOL, 's'), find_all(arguments, BOOLEAN_FORMAT_SYMBOL)
 
 
-def byte_to_booleans(bytes_: bytes) -> Tuple[List[bool]]:
+def byte_to_booleans(bytes_: bytes) -> List[List[bool]]:
     """
     Convert byte to list of booleans.
 
     :param bytes_: bytes convert to lists
     :return: tuple with list of boolean
     """
-    booleans = ()
-    for byte in bytes_:
-        # unpacked byte to bits
-        booleans += ([bool(1 << i & byte) for i in range(7, -1, -1)], )
-
-    return booleans
+    # unpacked byte to bits
+    return [[bool(1 << i & byte) for i in range(7, -1, -1)] for byte in bytes_]
 
 
 def boolean_to_byte(booleans: Union[Tuple[List[Union[int, bool]]], List[Union[int, bool]]]) -> bytes:

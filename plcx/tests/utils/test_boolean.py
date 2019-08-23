@@ -14,7 +14,7 @@ def test_byte_to_booleans(one_byte, exp):
     :param one_byte: one byte
     :param exp: expected value as list
     """
-    assert byte_to_booleans(one_byte) == (exp, )
+    assert byte_to_booleans(one_byte) == [exp]
 
 
 @pytest.mark.parametrize('boolean_list, exp', [
