@@ -12,7 +12,8 @@ from plcx.bag.unpack import bytes_to_list, bytes_to_dict
     (struct.pack('=ibBc', 28888, -16, 32, b'$'), 'ixxx', [28888]),
     (struct.pack('=s', b'abcdefgh'), 'c', [b'a']),
     (struct.pack('=x3s', b'abc'), 'x3s', [b'abc']),
-    (struct.pack('=cx3i', b'a', 2, 3, 4), 'cx3i', [b'a', 2, 3, 4])
+    (struct.pack('=cx3i', b'a', 2, 3, 4), 'cx3i', [b'a', 2, 3, 4]),
+    (struct.pack('=ss', b'$', b'$'), '#''#', [[0, 0, 1, 0, 0, 1, 0, 0], [0, 0, 1, 0, 0, 1, 0, 0]])
 ])
 def test_bytes_to_list(msg, format_, exp_value):
     """

@@ -14,7 +14,7 @@ def find_boolean_format(format_: str) -> Tuple[str, List[int]]:
     :return: tuple with edited format string and list of positions of character '#'
     """
     indexes = ''.join([f for f in format_ if not f.isdigit() and 'x' not in f])
-    return format_.replace('#', 'c'), find_all(indexes, '#')
+    return format_.replace('#', 's'), find_all(indexes, '#')
 
 
 def byte_to_booleans(byte: bytes) -> List[bool]:
