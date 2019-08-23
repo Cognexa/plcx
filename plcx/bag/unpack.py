@@ -25,9 +25,13 @@ def bytes_to_list(msg: bytes, format_: str, byte_order: str = BYTE_ORDER) -> Lis
     # find all defined boolean list in format
     format_, indexes = find_boolean_format(format_)
     # unpack bytes to tuple
-    result = struct.unpack(f'{byte_order}{format_}', msg)
+    arguments = struct.unpack(f'{byte_order}{format_}', msg)
     # convert one byte character to boolean list
-    return [byte_to_booleans(r) if i in indexes else r for i, r in enumerate(result)]
+    bytes_list = []
+    for i, arg in enumerate(arguments):
+        bytes_list += byte_to_booleans(arg) if i in indexes else (arg, )
+
+    return bytes_list
 
 
 def bytes_to_dict(
