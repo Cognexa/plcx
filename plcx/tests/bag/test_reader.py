@@ -2,7 +2,7 @@ import pytest
 import struct
 
 from plcx.bag.reader import Reader
-from plcx.utils.boolean import list_to_byte
+from plcx.utils.boolean import boolean_to_byte
 
 
 @pytest.mark.parametrize('msg, tag, arguments, byte_order, exp_value', [
@@ -13,7 +13,7 @@ from plcx.utils.boolean import list_to_byte
         '=',
         {'t1': b'abc', 't2': False}  # expected value
     ), (
-        struct.pack('=''2s''i''i''?''c', b'ab', 5, 4, True, list_to_byte([True, False, True])),
+        struct.pack('=''2s''i''i''?''c', b'ab', 5, 4, True, boolean_to_byte([True, False, True])),
         ('2s', b'ab'),
         [('i1', 'i'), ('i2', 'i'), ('b', '?'), ('lb', '#')],
         '=',

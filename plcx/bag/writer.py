@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Any, List, Tuple
 
 from plcx.constants import BYTE_ORDER
-from plcx.bag.pack import boolean_to_bytes
+from plcx.bag.pack import list_to_bytes
 
 logger = logging.getLogger(__name__)
 
@@ -26,4 +26,4 @@ class Writer:
 
         format_ = tag_format_ + ''.join([f for _, f in self.arguments])
 
-        return boolean_to_bytes(format_=format_, args=(tag_value,) + tuple(kwargs.values()), byte_order=self.byte_order)
+        return list_to_bytes(format_=format_, args=(tag_value,) + tuple(kwargs.values()), byte_order=self.byte_order)

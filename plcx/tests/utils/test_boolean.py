@@ -1,6 +1,6 @@
 import pytest
 
-from plcx.utils.boolean import byte_to_booleans, list_to_byte
+from plcx.utils.boolean import byte_to_booleans, boolean_to_byte
 
 
 @pytest.mark.parametrize('one_byte, exp', [
@@ -36,4 +36,4 @@ def test_list_to_byte(boolean_list, exp):
     :param boolean_list: list of boolean
     :param exp: expected byte
     """
-    assert list_to_byte(boolean_list) == exp
+    assert boolean_to_byte(boolean_list) == exp

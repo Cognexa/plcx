@@ -3,7 +3,7 @@ import struct
 from typing import Any, Dict, List, Union, Tuple
 
 from plcx.constants import BYTE_ORDER
-from plcx.utils.boolean import find_boolean_format, list_to_byte
+from plcx.utils.boolean import find_boolean_format, boolean_to_byte
 
 
 def arg_to_args(argument: Any) -> Tuple[Any]:
@@ -34,14 +34,14 @@ def to_bytes(format_: str, *args, byte_order: str = BYTE_ORDER) -> bytes:
     arguments = []
     for i, arg in enumerate(args):
         if i in indexes:
-            arguments.append(list_to_byte(arg))
+            arguments.append(boolean_to_byte(arg))
         else:
             arguments += arg_to_args(arg)
     # convert args to bytes
     return struct.pack(f'{byte_order}{format_}', *arguments)
 
 
-def boolean_to_bytes(format_: str, args: Union[Tuple[Any], List[Any]], byte_order: str = BYTE_ORDER) -> bytes:
+def list_to_bytes(format_: str, args: Union[Tuple[Any], List[Any]], byte_order: str = BYTE_ORDER) -> bytes:
     """
     Pack list of arguments to bytes message.
 
