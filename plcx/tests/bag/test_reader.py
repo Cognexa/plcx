@@ -30,6 +30,12 @@ from plcx.utils.boolean import boolean_to_byte
         [('integers_1', '2B'), ('booleans', '2#'), ('integers_2', '2B')],
         '=',
         {'integers_1': [1, 2], 'booleans': [[0, 0, 1, 0, 0, 1, 0, 0], [0, 0, 1, 0, 0, 1, 0, 0]], 'integers_2': [1, 2]}
+    ), (
+        struct.pack('=c''B''2sxx''2B', b'x', 2, b'$$', 1, 2),
+        ('c', b'x'),
+        [('integers_1', '1B'), ('booleans', '2#xx'), ('integers_2', '2B')],
+        '=',
+        {'integers_1': 2, 'booleans': [[0, 0, 1, 0, 0, 1, 0, 0], [0, 0, 1, 0, 0, 1, 0, 0]], 'integers_2': [1, 2]}
     )
 ])
 def test_reader(msg, tag, arguments, byte_order, exp_value):
