@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Tuple, Union
 
 from plcx.constants import BYTE_ORDER
 from plcx.utils.boolean import byte_to_booleans, BOOLEAN_FORMAT_SYMBOL
-from plcx.utils.find import remove_number, find_counts
+from plcx.utils.find import remove_number, args_counts
 
 
 VALUE = Union[str, int, float, bool, List[bool]]
@@ -23,7 +23,7 @@ def bytes_to_list(msg: bytes, format_: str, byte_order: str = BYTE_ORDER) -> Lis
         raise TypeError('Got unexpected type of message.')
 
     # count character in format
-    count_format = find_counts(format_)
+    count_format = args_counts(format_)
 
     # unpack bytes to tuple
     plcx_format = format_.replace(BOOLEAN_FORMAT_SYMBOL, 's')

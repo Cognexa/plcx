@@ -1,6 +1,6 @@
 import pytest
 
-from plcx.utils.find import find_all, remove_number, find_counts
+from plcx.utils.find import find_all, remove_number, args_counts
 
 
 @pytest.mark.parametrize('text, symbol, exp_indexes', [
@@ -37,11 +37,11 @@ def test_remove_number(text, exp_text):
     ("ssf", [("s", 1), ("s", 1), ("f", 1)]),
     ("22ssf", [("s", 22), ("s", 1), ("f", 1)]),
 ])
-def test_find_counts(format_, exp_counts):
+def test_args_counts(format_, exp_counts):
     """
     Test found counts of character in format.
 
     :param format_: bytes message format
     :param exp_counts: expected list of character and their count
     """
-    assert find_counts(format_) == exp_counts
+    assert args_counts(format_) == exp_counts

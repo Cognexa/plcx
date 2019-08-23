@@ -38,7 +38,7 @@ def find_count(format_: str) -> int:
     return int(result[::-1] or '1')
 
 
-def find_counts(format_: str) -> List[Tuple[str, int]]:
+def args_counts(format_: str) -> List[Tuple[str, int]]:
     """
     Find count of character in bytes message format.
 

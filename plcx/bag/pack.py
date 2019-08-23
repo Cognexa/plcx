@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Union, Tuple
 
 from plcx.constants import BYTE_ORDER
 from plcx.utils.boolean import find_boolean_format, boolean_to_byte
+from plcx.utils.find import args_counts
 
 
 def arg_to_args(argument: Any) -> Tuple[Any]:
