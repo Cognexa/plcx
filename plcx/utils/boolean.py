@@ -2,22 +2,7 @@ from typing import List
 
 from typing import Tuple, Union
 
-from plcx.utils.find import find_all
-
 BOOLEAN_FORMAT_SYMBOL = '#'
-
-
-def find_boolean_format(format_: str) -> Tuple[str, List[int]]:
-    """
-    Find symbol `#` representing byte to list of boolean values conversion.
-    Convert format to format string for struct.pack.
-
-    :param format_: message format
-    :return: tuple with edited format string and list of positions of character '#'
-    """
-    arguments = ''.join([f for f in format_ if not f.isdigit() and 'x' not in f])
-
-    return format_.replace(BOOLEAN_FORMAT_SYMBOL, 's'), find_all(arguments, BOOLEAN_FORMAT_SYMBOL)
 
 
 def byte_to_booleans(bytes_: bytes) -> List[List[bool]]:
