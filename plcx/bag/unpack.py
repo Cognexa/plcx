@@ -1,11 +1,9 @@
 import struct
-
 from typing import Dict, List, Optional, Tuple, Union
 
 from plcx.constants import BYTE_ORDER
-from plcx.utils.boolean import byte_to_booleans, BOOLEAN_FORMAT_SYMBOL
-from plcx.utils.find import remove_number, args_counts
-
+from plcx.utils.boolean import BOOLEAN_FORMAT_SYMBOL, byte_to_booleans
+from plcx.utils.find import args_counts, remove_number
 
 VALUE = Union[str, int, float, bool, List[bool]]
 
@@ -20,14 +18,14 @@ def bytes_to_list(msg: bytes, format_: str, byte_order: str = BYTE_ORDER) -> Lis
     :return: tuple with unpacked values
     """
     if not isinstance(msg, bytes):
-        raise TypeError('Got unexpected type of message.')
+        raise TypeError("Got unexpected type of message.")
 
     # count character in format
     arguments_count = args_counts(format_)
 
     # unpack bytes to tuple
-    plcx_format = format_.replace(BOOLEAN_FORMAT_SYMBOL, 's')
-    arguments = list(struct.unpack(f'{byte_order}{plcx_format}', msg))
+    plcx_format = format_.replace(BOOLEAN_FORMAT_SYMBOL, "s")
+    arguments = list(struct.unpack(f"{byte_order}{plcx_format}", msg))
 
     # group arguments and convert to boolean list
     bytes_list = []
@@ -35,7 +33,7 @@ def bytes_to_list(msg: bytes, format_: str, byte_order: str = BYTE_ORDER) -> Lis
         if c == BOOLEAN_FORMAT_SYMBOL:
             boolean_list = byte_to_booleans(arguments.pop(0))
             bytes_list.append(boolean_list[0] if len(boolean_list) == 1 else boolean_list)
-        elif count == 1 or c in ['c', 's']:
+        elif count == 1 or c in ["c", "s"]:
             bytes_list.append(arguments.pop(0))
         else:
             bytes_list.append([arguments.pop(0) for _ in range(count)])
@@ -44,9 +42,7 @@ def bytes_to_list(msg: bytes, format_: str, byte_order: str = BYTE_ORDER) -> Lis
 
 
 def bytes_to_dict(
-        msg: bytes,
-        config: List[Tuple[Optional[str], str]],
-        byte_order: str = BYTE_ORDER
+    msg: bytes, config: List[Tuple[Optional[str], str]], byte_order: str = BYTE_ORDER
 ) -> Dict[str, VALUE]:
     """
     Unpack bytes with define format to dictionary.
@@ -56,6 +52,6 @@ def bytes_to_dict(
     :param byte_order: indicate the byte order
     :return: dictionary with parameters name as keys and values as values
     """
-    keys = [name for name, format_ in config if 'x' != remove_number(format_)]
-    values = bytes_to_list(msg=msg, format_=''.join([f for _, f in config]), byte_order=byte_order)
+    keys = [name for name, format_ in config if "x" != remove_number(format_)]
+    values = bytes_to_list(msg=msg, format_="".join([f for _, f in config]), byte_order=byte_order)
     return dict(zip(keys, values))

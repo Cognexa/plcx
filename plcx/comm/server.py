@@ -1,6 +1,5 @@
 import asyncio
 import logging
-
 from typing import Callable
 
 from plcx.constants import MAX_TRY, TIMEOUT
@@ -18,7 +17,7 @@ def tcp_read_echo(response_handler: Callable, read_bytes: int = 512, time_out: f
     :return: coroutine handler
     """
     if not callable(response_handler):
-        raise AttributeError('response_handler must be callable function')
+        raise AttributeError("response_handler must be callable function")
 
     async def echo_handler(reader, writer) -> None:
         """
@@ -50,12 +49,12 @@ def tcp_read_echo(response_handler: Callable, read_bytes: int = 512, time_out: f
 
 
 async def serverx(
-        host: str,
-        port: int,
-        response_handler: Callable,
-        read_bytes: int = 512,
-        time_out: float = TIMEOUT,
-        max_try: int = MAX_TRY,
+    host: str,
+    port: int,
+    response_handler: Callable,
+    read_bytes: int = 512,
+    time_out: float = TIMEOUT,
+    max_try: int = MAX_TRY,
 ) -> asyncio.AbstractServer:
     """
     Initialized event loop and add server to it.

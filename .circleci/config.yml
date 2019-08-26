@@ -1,0 +1,56 @@
+version: 2
+
+jobs:
+  test:
+    docker:
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - run:
+          name: Write python version
+          command: echo "$PYTHON_VERSION" > /tmp/python-version
+      - restore_cache:
+          key: python-deps-{{ checksum "/tmp/python-version" }}-{{ checksum "Pipfile.lock" }}
+      - run:
+          name: Install dependencies
+          command: pipenv install --ignore-pipfile --dev
+      - save_cache:
+          paths:
+            - ~/.local/share/virtualenvs
+          key: python-deps-{{ checksum "/tmp/python-version" }}-{{ checksum "Pipfile.lock" }}
+      - run:
+          name: pytest
+          command: |
+            . venv/bin/activate
+
+  code_quality:
+    docker:
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - run:
+          name: Write python version
+          command: echo "$PYTHON_VERSION" > /tmp/python-version
+      - restore_cache:
+          key: python-deps-{{ checksum "/tmp/python-version" }}-{{ checksum "Pipfile.lock" }}
+      - run:
+          name: install dependencies
+          command: |
+            pipenv install --ignore-pipfile --dev
+      - save_cache:
+          paths:
+            - ~/.local/share/virtualenvs
+          key: python-deps-{{ checksum "/tmp/python-version" }}-{{ checksum "Pipfile.lock" }}
+      - run:
+          name: black
+          command: pipenv run black --check .
+      - run:
+          name: isort
+          command: pipenv run isort -rc . --check
+
+workflows:
+  version: 2
+  test_all:
+    jobs:
+      - test
+      - code_quality

@@ -1,8 +1,9 @@
 import asyncio
 import logging
-import pytest
-import time
 import threading
+import time
+
+import pytest
 
 from plcx.comm.server import serverx
 
@@ -63,13 +64,13 @@ def test_serverx(tcp_client):
     """
     host, port, client = tcp_client
 
-    thread = StoppableServerThread(host, port, lambda x: b'ok')
+    thread = StoppableServerThread(host, port, lambda x: b"ok")
     thread.start()
 
     assert thread.is_alive()
 
-    assert client(b'test', 4) == b'ok'
-    assert client(b'test', 4) == b'ok'
+    assert client(b"test", 4) == b"ok"
+    assert client(b"test", 4) == b"ok"
 
     thread.stop()
     thread.join()
@@ -86,29 +87,26 @@ def test_serverx_try_connect(tcp_client):
     """
     host, port, client = tcp_client
 
-    thread = StoppableServerThread(host, port, lambda x: b'ok')
+    thread = StoppableServerThread(host, port, lambda x: b"ok")
     thread.start()
     time.sleep(0.2)  # wait while serve is starting
 
     with pytest.raises(OSError):
-        asyncio.run(serverx(host, port, lambda x: b'ok', 16, time_out=.2, max_try=1))
+        asyncio.run(serverx(host, port, lambda x: b"ok", 16, time_out=0.2, max_try=1))
 
     thread.stop()
     thread.join()
 
 
 def raise_handler(*args, **kwargs):
-    raise TimeoutError(f'time out with args: `{args}` and kwargs: `{kwargs}`')
+    raise TimeoutError(f"time out with args: `{args}` and kwargs: `{kwargs}`")
 
 
 def not_arg_handler():
     pass
 
 
-@pytest.mark.parametrize("handler, exp_error", [
-    (raise_handler, TimeoutError),
-    (not_arg_handler, TypeError)
-])
+@pytest.mark.parametrize("handler, exp_error", [(raise_handler, TimeoutError), (not_arg_handler, TypeError)])
 def test_serverx_error(tcp_client, caplog, handler, exp_error):
     """
     Test raising error of serverx.
@@ -125,13 +123,14 @@ def test_serverx_error(tcp_client, caplog, handler, exp_error):
     time.sleep(0.2)  # wait while serve is starting
 
     with caplog.at_level(logging.ERROR, logger="plcx.comm.server"):
-        assert client(b'test', 4) is None
+        assert client(b"test", 4) is None
 
-        assert all([record.name == "plcx.comm.server" for record in caplog.records if record.filename == 'server.py'])
+        assert all([record.name == "plcx.comm.server" for record in caplog.records if record.filename == "server.py"])
         assert all(
             [
                 issubclass(record.exc_info[0], exp_error)
-                for record in caplog.records if record.filename == 'base_events.py'
+                for record in caplog.records
+                if record.filename == "base_events.py"
             ]
         )
 
