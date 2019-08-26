@@ -20,8 +20,7 @@ jobs:
           key: python-deps-{{ checksum "/tmp/python-version" }}-{{ checksum "Pipfile.lock" }}
       - run:
           name: pytest
-          command: |
-            . venv/bin/activate
+          command: pipenv run pytest
 
   code_quality:
     docker:
