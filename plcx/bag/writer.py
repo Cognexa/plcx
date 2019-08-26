@@ -28,4 +28,4 @@ class Writer:
         args = itemgetter(*[name for name, _ in self.arguments if name])(kwargs)
         args = (args, ) if not isinstance(args, tuple) else args  # convert args to tuple
 
-        return boolean_to_bytes(format_=format_, args=(tag_value,) + args, byte_order=self.byte_order)
+        return list_to_bytes(format_=format_, args=(tag_value,) + args, byte_order=self.byte_order)
