@@ -3,20 +3,8 @@ import struct
 from typing import Any, Dict, List, Union, Tuple
 
 from plcx.constants import BYTE_ORDER
-from plcx.utils.boolean import find_boolean_format, list_to_byte
-
-
-def arg_to_args(argument: Any) -> Tuple[Any]:
-    """
-    Convert one argument to tuple.
-
-    :param argument: any argument
-    :return: tuple with arguments
-    """
-    if isinstance(argument, (Tuple, List)):
-        return tuple(argument)
-    else:
-        return (argument, )
+from plcx.utils.boolean import boolean_to_byte, BOOLEAN_FORMAT_SYMBOL
+from plcx.utils.find import args_counts
 
 
 def to_bytes(format_: str, *args, byte_order: str = BYTE_ORDER) -> bytes:
@@ -28,20 +16,26 @@ def to_bytes(format_: str, *args, byte_order: str = BYTE_ORDER) -> bytes:
     :param byte_order: indicate the byte order
     :return: bytes message
     """
-    # find all defined boolean list in format
-    format_, indexes = find_boolean_format(format_)
+    # count character in format
+    arguments_count = args_counts(format_)
+
     # convert args to bytes
     arguments = []
-    for i, arg in enumerate(args):
-        if i in indexes:
-            arguments.append(list_to_byte(arg))
+    for arg, char_count in zip(args, arguments_count):
+        character, count = char_count
+        if character == BOOLEAN_FORMAT_SYMBOL:
+            arguments.append(boolean_to_byte(arg))
+        elif count == 1 or character in ['c', 's']:
+            arguments.append(arg)
         else:
-            arguments += arg_to_args(arg)
+            arguments += arg
+
     # convert args to bytes
-    return struct.pack(f'{byte_order}{format_}', *arguments)
+    plcx_format = format_.replace(BOOLEAN_FORMAT_SYMBOL, 's')
+    return struct.pack(f'{byte_order}{plcx_format}', *arguments)
 
 
-def boolean_to_bytes(format_: str, args: Union[Tuple[Any], List[Any]], byte_order: str = BYTE_ORDER) -> bytes:
+def list_to_bytes(format_: str, args: Union[Tuple[Any], List[Any]], byte_order: str = BYTE_ORDER) -> bytes:
     """
     Pack list of arguments to bytes message.
 

@@ -2,7 +2,7 @@ import pytest
 import struct
 
 from plcx.bag.reader import Reader
-from plcx.utils.boolean import list_to_byte
+from plcx.utils.boolean import boolean_to_byte
 
 
 @pytest.mark.parametrize('msg, tag, arguments, byte_order, exp_value', [
@@ -13,7 +13,7 @@ from plcx.utils.boolean import list_to_byte
         '=',
         {'t1': b'abc', 't2': False}  # expected value
     ), (
-        struct.pack('=''2s''i''i''?''c', b'ab', 5, 4, True, list_to_byte([True, False, True])),
+        struct.pack('=''2s''i''i''?''c', b'ab', 5, 4, True, boolean_to_byte([True, False, True])),
         ('2s', b'ab'),
         [('i1', 'i'), ('i2', 'i'), ('b', '?'), ('lb', '#')],
         '=',
@@ -24,6 +24,18 @@ from plcx.utils.boolean import list_to_byte
         [(None, 'x'), ('text', '2s'), ('integers', '2i')],
         '=',
         {'text': b'ab', 'integers': [5, 4]}
+    ), (
+        struct.pack('=c2s''2B''2s''2B', b'x', b'tt', 1, 2, b'$$', 1, 2),
+        ('x2s', b'tt'),
+        [('integers_1', '2B'), ('booleans', '2#'), ('integers_2', '2B')],
+        '=',
+        {'integers_1': [1, 2], 'booleans': [[0, 0, 1, 0, 0, 1, 0, 0], [0, 0, 1, 0, 0, 1, 0, 0]], 'integers_2': [1, 2]}
+    ), (
+        struct.pack('=c''B''2sxx''2B', b'x', 2, b'$$', 1, 2),
+        ('c', b'x'),
+        [('integers_1', '1B'), ('booleans', '2#xx'), ('integers_2', '2B')],
+        '=',
+        {'integers_1': 2, 'booleans': [[0, 0, 1, 0, 0, 1, 0, 0], [0, 0, 1, 0, 0, 1, 0, 0]], 'integers_2': [1, 2]}
     )
 ])
 def test_reader(msg, tag, arguments, byte_order, exp_value):
