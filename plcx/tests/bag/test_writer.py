@@ -33,6 +33,8 @@ from plcx.bag.writer import Writer
         b'S\x00\x80\x80\x80\x80\x80\x80\x00\x00\x01',
         11
     ),
+    ({'a': 1, 'b': 2}, ('c', b'S'), [('a', 'B')], '=', b'S\01', 2),  # skip b
+    ({'b': 2, 'a': 1}, ('c', b'S'), [('a', 'B'), ('b', 'B')], '=', b'S\01\02', 3),  # change order of kwargs
 ])
 def test_write(kwargs, tag, arguments, byte_order, exp_value, exp_size):
     """
@@ -54,8 +56,7 @@ def test_write(kwargs, tag, arguments, byte_order, exp_value, exp_size):
 
 
 @pytest.mark.parametrize('kwargs, tag, arguments, byte_order, error', [
-    ({'a': 5, 'b': b'a'}, ('i', 101), [('b', 's')], '@', struct.error),
-    ({'b': b'a'}, ('s', 101), [('b', 's')], '@', struct.error)
+    ({'b': b'a'}, ('s', 101), [('b', 's')], '@', struct.error),
 ])
 def test_write_error(kwargs, tag, arguments, byte_order, error):
     """
