@@ -36,7 +36,7 @@ def tcp_read_echo(response_handler: Callable, read_bytes: int = 512) -> asyncio.
                 # wait for message response
                 response_handler(message, reader, writer)
 
-                # close writer
+                # flush the write buffer
                 await writer.drain()
 
             except NotReadableMessage as error:
