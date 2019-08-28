@@ -40,7 +40,7 @@ class StoppableServerThread(threading.Thread):
 
         # define tasks
         server_ = loop.create_task(
-            serverx(self.host, self.port, self.echo_handler, 16, time_out=0.05, max_try=self.max_try)
+            serverx(self.host, self.port, self.echo_handler, 16, max_try=self.max_try)
         )
         killer_ = loop.create_task(killer(self, server_))
 
@@ -96,14 +96,18 @@ def test_serverx_try_connect(tcp_client):
     time.sleep(0.2)  # wait while serve is starting
 
     with pytest.raises(OSError):
-        asyncio.run(serverx(host, port, lambda x: b'ok', 16, time_out=.2, max_try=1))
+        asyncio.run(serverx(host, port, lambda x: b'ok', 16, max_try=1))
 
     thread.stop()
     thread.join()
 
 
+def raise_timeout(*args, **kwargs):
+    raise TimeoutError(f'timeout error with args: `{args}` and kwargs: `{kwargs}`')
+
+
 def raise_handler(*args, **kwargs):
-    raise TimeoutError(f'time out with args: `{args}` and kwargs: `{kwargs}`')
+    raise AttributeError(f'attribute error with args: `{args}` and kwargs: `{kwargs}`')
 
 
 def not_arg_handler():
@@ -111,7 +115,8 @@ def not_arg_handler():
 
 
 @pytest.mark.parametrize("handler, exp_error", [
-    (raise_handler, TimeoutError),
+    (raise_timeout, TimeoutError),
+    (raise_handler, AttributeError),
     (not_arg_handler, TypeError)
 ])
 def test_serverx_error(tcp_client, caplog, handler, exp_error):
