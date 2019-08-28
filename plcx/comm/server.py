@@ -4,6 +4,7 @@ import logging
 from typing import Callable
 
 from plcx.constants import MAX_TRY, TIMEOUT
+from plcx.exceptions import NotReadableMessage
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +21,7 @@ def tcp_read_echo(response_handler: Callable, read_bytes: int = 512, time_out: f
     if not callable(response_handler):
         raise AttributeError('response_handler must be callable function')
 
-    async def echo_handler(reader, writer) -> None:
+    async def echo_handler(reader: asyncio.StreamReader, writer: asyncio.StreamWriter) -> None:
         """
         Receive message from client.
 
@@ -28,20 +29,29 @@ def tcp_read_echo(response_handler: Callable, read_bytes: int = 512, time_out: f
         :param writer: client writer
         :return:
         """
-        try:
-            # read message
-            message = await asyncio.wait_for(reader.read(read_bytes), timeout=time_out)  # max number of bytes to read
+        while not writer.is_closing():
+            try:
+                # read message
+                message = await asyncio.wait_for(
+                    reader.read(read_bytes),  # max number of bytes to read
+                    timeout=time_out
+                )
 
-            # wait for message response
-            response_handler(message, reader, writer)
+                # wait for message response
+                response_handler(message, reader, writer)
 
-            # close writer
-            await writer.drain()
-            writer.close()
+                # close writer
+                await writer.drain()
 
-        except Exception as error:
-            logger.error(error)
-            raise error
+            except (TimeoutError, NotReadableMessage) as error:
+                # do not close connection if this error type
+                logger.warning(error)
+
+            except Exception as error:
+                logger.error(error)
+                raise error
+
+        writer.close()
 
     return echo_handler
 

@@ -103,7 +103,7 @@ def test_serverx_try_connect(tcp_client):
 
 
 def raise_handler(*args, **kwargs):
-    raise TimeoutError(f'time out with args: `{args}` and kwargs: `{kwargs}`')
+    raise AttributeError(f'attribute error with args: `{args}` and kwargs: `{kwargs}`')
 
 
 def not_arg_handler():
@@ -111,7 +111,7 @@ def not_arg_handler():
 
 
 @pytest.mark.parametrize("handler, exp_error", [
-    (raise_handler, TimeoutError),
+    (raise_handler, AttributeError),
     (not_arg_handler, TypeError)
 ])
 def test_serverx_error(tcp_client, caplog, handler, exp_error):
