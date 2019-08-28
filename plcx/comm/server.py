@@ -33,10 +33,7 @@ def tcp_read_echo(response_handler: Callable, read_bytes: int = 512, time_out: f
             message = await asyncio.wait_for(reader.read(read_bytes), timeout=time_out)  # max number of bytes to read
 
             # wait for message response
-            response = response_handler(message)
-
-            # send response
-            writer.write(response)
+            response_handler(message, reader, writer)
 
             # close writer
             await writer.drain()
