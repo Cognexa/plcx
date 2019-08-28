@@ -63,7 +63,12 @@ def test_serverx(tcp_client):
     """
     host, port, client = tcp_client
 
-    thread = StoppableServerThread(host, port, lambda x: b'ok')
+    def handler(message, reader, writer):
+        logging.info(f'got message: `{message}`')
+        logging.debug(f'got reader: `{reader}` and `{writer}`')
+        writer.write(b'ok')
+
+    thread = StoppableServerThread(host, port, handler)
     thread.start()
 
     assert thread.is_alive()
