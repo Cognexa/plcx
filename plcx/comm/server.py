@@ -36,7 +36,7 @@ def tcp_read_echo(response_handler: Callable, read_bytes: int = 512) -> asyncio.
                 # wait for message response
                 response_handler(message, reader, writer)
 
-                # flush the write buffer
+                # flush the writer buffer
                 await writer.drain()
 
             except NotReadableMessage as error:
@@ -48,6 +48,7 @@ def tcp_read_echo(response_handler: Callable, read_bytes: int = 512) -> asyncio.
                 raise error
 
         writer.close()
+        logger.info("connection closed")
 
     return echo_handler
 
@@ -75,6 +76,7 @@ async def serverx(
             return await asyncio.start_server(tcp_read_echo(response_handler, read_bytes), host, port)
         except (OSError, asyncio.TimeoutError) as error:
             try_count += 1
+            logger.debug(f"try create serverx `{try_count}`")
             if try_count >= max_try:
                 raise error
 

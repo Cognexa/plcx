@@ -30,6 +30,7 @@ async def connect(
             return await asyncio.wait_for(asyncio.open_connection(host=host, port=port), timeout=time_out)
         except (OSError, asyncio.TimeoutError) as error:
             try_count += 1
+            logger.debug(f"try connecting `{try_count}`")
             if try_count >= max_try:
                 raise error
 
@@ -66,6 +67,7 @@ async def clientx(
 
     # close connection
     writer.close()
+    logger.info("connection closed")
 
     return response
 
