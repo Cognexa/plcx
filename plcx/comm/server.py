@@ -31,7 +31,9 @@ def tcp_read_echo(response_handler: Callable, read_bytes: int = 512) -> asyncio.
         while not writer.is_closing():
             try:
                 # read message
+                logger.info("waiting for message")
                 message = await reader.read(read_bytes)  # max number of bytes to read
+                logger.info("message received")
 
                 # wait for message response
                 response_handler(message, reader, writer)
