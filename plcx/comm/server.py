@@ -36,7 +36,7 @@ def tcp_read_echo(response_handler: Callable, read_bytes: int = 512) -> asyncio.
                 logger.info("message received")
 
                 # wait for message response
-                response_handler(message, reader, writer)
+                response_handler(message=message, reader=reader, writer=writer)
 
                 # flush the writer buffer
                 await writer.drain()
