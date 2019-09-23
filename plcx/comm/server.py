@@ -27,7 +27,10 @@ def tcp_read_echo(response_handler: Callable, read_bytes: int = 512) -> asyncio.
         :param writer: client writer
         :return:
         """
-        while not writer.is_closing():
+        client_address, client_port = writer.transport.get_extra_info("peername")
+        logger.info(f"new connection was established `{client_address}:{client_port}`")
+
+        while not writer.transport.is_closing():
             try:
                 # read message
                 logger.info("waiting for message")
