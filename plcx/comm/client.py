@@ -1,6 +1,5 @@
 import asyncio
 import logging
-
 from dataclasses import dataclass
 from typing import Optional, Tuple
 
@@ -10,10 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 async def connect(
-        host: str,
-        port: int,
-        time_out: float = TIMEOUT,
-        max_try: int = MAX_TRY,
+    host: str, port: int, time_out: float = TIMEOUT, max_try: int = MAX_TRY
 ) -> Tuple[asyncio.streams.StreamReader, asyncio.streams.StreamWriter]:
     """
     Create connection to server.
@@ -39,12 +35,12 @@ async def connect(
 
 
 async def clientx(
-        host: str,
-        port: int,
-        message: bytes,
-        response_bytes: int = 0,  # zero means no response
-        time_out: float = TIMEOUT,
-        max_try: int = MAX_TRY,
+    host: str,
+    port: int,
+    message: bytes,
+    response_bytes: int = 0,  # zero means no response
+    time_out: float = TIMEOUT,
+    max_try: int = MAX_TRY,
 ) -> bytes:
     """
     Send message to server.
@@ -83,11 +79,11 @@ class ClientX:
     max_try: int = MAX_TRY
 
     def send(
-            self,
-            message: bytes,
-            response_bytes: Optional[int] = None,
-            time_out: Optional[float] = None,
-            max_try: Optional[int] = None
+        self,
+        message: bytes,
+        response_bytes: Optional[int] = None,
+        time_out: Optional[float] = None,
+        max_try: Optional[int] = None,
     ) -> bytes:
         """
         Send message.
@@ -98,7 +94,7 @@ class ClientX:
         :param max_try: maximum attention to create server [3 times]
         :return: response bytes message or None
         """
-        logger.debug(f'try send message with client to `{self.host}:{self.port}`')
+        logger.debug(f"try send message with client to `{self.host}:{self.port}`")
 
         loop = asyncio.get_event_loop()
         return loop.run_until_complete(

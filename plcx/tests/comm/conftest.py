@@ -1,22 +1,23 @@
 import socket
-import pytest
-import time
 import threading
+import time
+
+import pytest
 
 PORT = 33888
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def tcp_server():
     """Run testing tcp server."""
     global PORT
-    host, port = 'localhost', PORT
+    host, port = "localhost", PORT
     PORT += 1
 
     def server():
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as soc:
             soc.bind((host, port))
-            soc.settimeout(.5)
+            soc.settimeout(0.5)
             soc.listen(1)
 
             while True:
@@ -27,12 +28,12 @@ def tcp_server():
                         if not message:
                             break
                         time.sleep(0.05)  # wait to response
-                        conn.sendall(f'received:{message.decode()!r}'.encode())
+                        conn.sendall(f"received:{message.decode()!r}".encode())
                     conn.close()
                 except (OSError, TimeoutError):
                     continue
 
-    thread = threading.Thread(target=server, name='server')
+    thread = threading.Thread(target=server, name="server")
     thread.daemon = True
     thread.start()
 
@@ -43,7 +44,7 @@ def tcp_server():
 def tcp_client():
     """Return function to send message to server."""
     global PORT
-    host, port = 'localhost', PORT
+    host, port = "localhost", PORT
     PORT += 1
 
     def client(message: bytes, read_bytes: int = 0) -> bytes:
@@ -58,7 +59,7 @@ def tcp_client():
         while try_count < 3:
             try:
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as soc:
-                    soc.settimeout(.5)
+                    soc.settimeout(0.5)
                     # try to make connection
                     soc.connect((host, port))  # connect to server
 
