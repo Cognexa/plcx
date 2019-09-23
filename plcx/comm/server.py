@@ -75,6 +75,7 @@ async def serverx(
     try_count = 0
     while True:
         try:
+            logger.info(f"creating server `{host}:{port}`")
             return await asyncio.start_server(tcp_read_echo(response_handler, read_bytes), host, port)
         except (OSError, asyncio.TimeoutError) as error:
             try_count += 1

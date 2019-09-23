@@ -37,7 +37,7 @@ class Reader:
         try:
             value = self._read(message).get('tag', None)
         except struct.error:
-            logger.debug(f'Error while reading message `{message}`.')
+            logger.debug(f'Reader could not read message `{message}`.')
             return False
         else:
             logger.debug(f'Reader read tag value `{value}` and expected `{exp_value}`.')

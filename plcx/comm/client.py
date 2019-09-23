@@ -27,6 +27,7 @@ async def connect(
     try_count = 0
     while True:
         try:
+            logger.info(f"try connect to server `{host}:{port}`")
             return await asyncio.wait_for(asyncio.open_connection(host=host, port=port), timeout=time_out)
         except (OSError, asyncio.TimeoutError) as error:
             try_count += 1
@@ -61,6 +62,7 @@ async def clientx(
 
     # send message to server
     writer.write(message)
+    logger.info("client send message to server and wait for response")
 
     # get response with timeout
     response = await asyncio.wait_for(reader.read(response_bytes), timeout=time_out)
