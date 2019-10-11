@@ -18,6 +18,11 @@ python-forge = ">=18"
 six = ">=1.9"
 wcwidth = ">=0.1"
 zipp = ">=0.5"
+isort = "*"
+black = "*"
 
 [requires]
 python_version = "3.7.4"
+
+[pipenv]
+allow_prereleases = true
