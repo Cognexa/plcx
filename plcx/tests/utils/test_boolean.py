@@ -3,7 +3,7 @@ import pytest
 from plcx.utils.boolean import byte_to_booleans, boolean_to_byte
 
 
-@pytest.mark.parametrize('one_byte, exp', [
+@pytest.mark.parametrize("one_byte, exp", [
     (int('00100100', 2).to_bytes(1, 'little'), [False, False, True, False, False, True, False, False]),
     (int('10100001', 2).to_bytes(1, 'little'), [True, False, True, False, False, False, False, True])
 ])
