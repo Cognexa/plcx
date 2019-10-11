@@ -34,7 +34,7 @@ async def connect(
             if try_count >= max_try:
                 raise error
 
-            await asyncio.sleep(0.2)  # wait for new try
+            await asyncio.sleep(0.3)  # wait for new try
 
 
 async def clientx(

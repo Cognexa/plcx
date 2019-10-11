@@ -13,7 +13,7 @@ class StoppableServerThread(threading.Thread):
     regularly for the stopped() condition.
     """
 
-    def __init__(self, host, port, echo_handler, max_try=5):
+    def __init__(self, host, port, echo_handler, max_try=10):
         super(StoppableServerThread, self).__init__()
         self._stop_event = threading.Event()
         self.host = host
@@ -93,7 +93,7 @@ def test_serverx_try_connect(tcp_client):
 
     thread = StoppableServerThread(host, port, lambda x: b'ok')
     thread.start()
-    time.sleep(0.2)  # wait while serve is starting
+    time.sleep(0.3)  # wait while serve is starting
 
     with pytest.raises(OSError):
         asyncio.run(serverx(host, port, lambda x: b'ok', 16, max_try=1))
@@ -132,7 +132,7 @@ def test_serverx_error(tcp_client, caplog, handler, exp_error):
 
     thread = StoppableServerThread(host, port, handler, max_try=1)
     thread.start()
-    time.sleep(0.2)  # wait while serve is starting
+    time.sleep(0.3)  # wait while serve is starting
 
     with caplog.at_level(logging.ERROR, logger="plcx.comm.server"):
         assert client(b'test', 4) is None
