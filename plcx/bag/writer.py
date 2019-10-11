@@ -6,6 +6,7 @@ from typing import Any, List, Tuple
 
 from plcx.constants import BYTE_ORDER
 from plcx.bag.pack import list_to_bytes
+from plcx.utils.boolean import BIT_ORDER
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +16,7 @@ class Writer:
     tag: Tuple[str, Any]  # (<format>, <value>)
     arguments: List[Tuple[str, str]]  # (<name>, <format>)
     byte_order: str = BYTE_ORDER
+    bit_order: str = BIT_ORDER
 
     def write(self, **kwargs) -> bytes:
         """
@@ -28,4 +30,6 @@ class Writer:
         args = itemgetter(*[name for name, _ in self.arguments if name])(kwargs)
         args = (args, ) if not isinstance(args, tuple) else args  # convert args to tuple
 
-        return list_to_bytes(format_=format_, args=(tag_value,) + args, byte_order=self.byte_order)
+        return list_to_bytes(
+            format_=format_, args=(tag_value,) + args, byte_order=self.byte_order, bit_order=self.bit_order
+        )
