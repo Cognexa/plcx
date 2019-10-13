@@ -14,7 +14,7 @@ def to_bytes(format_: str, *args, byte_order: str = BYTE_ORDER, bit_order: str =
     :param format_: message format
     :param args: arguments
     :param byte_order: indicate the byte order
-    :param bit_order: bit order in one byte, `asc` or `dsc` [asc]
+    :param bit_order: bit order in one byte, `LSB` or `MSB` [LSB]
     :return: bytes message
     """
     # count character in format
@@ -45,7 +45,7 @@ def list_to_bytes(
     :param format_: message format
     :param args: list of arguments
     :param byte_order: indicate the byte order
-    :param bit_order: bit order in one byte, `asc` or `dsc` [asc]
+    :param bit_order: bit order in one byte, `LSB` or `MSB` [LSB]
     :return: bytes message
     """
     return to_bytes(format_, *args, byte_order=byte_order, bit_order=bit_order)
@@ -60,7 +60,7 @@ def dict_to_bytes(
     :param format_: message format
     :param kwargs: dictionary
     :param byte_order: indicate the byte order
-    :param bit_order: bit order in one byte, `asc` or `dsc` [asc]
+    :param bit_order: bit order in one byte, `LSB` or `MSB` [LSB]
     :return: bytes message
     """
     return to_bytes(format_, *kwargs.values(), byte_order=byte_order, bit_order=bit_order)

@@ -4,14 +4,14 @@ from typing import Tuple, Union
 
 BOOLEAN_FORMAT_SYMBOL = '#'
 BOOL_VALUE = Union[int, bool]
-VALID_BIT_ORDERS = ["asc", "dsc"]
-BIT_ORDER = "asc"
+VALID_BIT_ORDERS = ["LSB", "MSB"]
+BIT_ORDER = "LSB"
 
 
 def validate_bit_order(bit_order) -> NoReturn:
     """Validate bit order parameter."""
     if bit_order not in VALID_BIT_ORDERS:
-        raise AttributeError(f"except `asc` or `dsc` bit order, got `{bit_order}`")
+        raise AttributeError(f"except `LSB` or `MSB` bit order, got `{bit_order}`")
 
 
 def byte_to_booleans(bytes_: bytes, bit_order: str = BIT_ORDER) -> List[List[bool]]:
@@ -19,7 +19,7 @@ def byte_to_booleans(bytes_: bytes, bit_order: str = BIT_ORDER) -> List[List[boo
     Convert byte to list of booleans.
 
     :param bytes_: bytes convert to lists
-    :param bit_order: bit order in one byte, `asc` or `dsc` [asc]
+    :param bit_order: bit order in one byte, `LSB` or `MSB` [LSB]
     :return: tuple with list of boolean
     """
     validate_bit_order(bit_order)
@@ -36,7 +36,7 @@ def boolean_to_byte(
     Convert list of bool or int (0 or 1) values to bytes. Length of list must be at least 8.
 
     :param booleans: list of bool or int value
-    :param bit_order: bit order in one byte, `asc` or `dsc` [asc]
+    :param bit_order: bit order in one byte, `LSB` or `MSB` [LSB]
     :return: one byte
     """
     validate_bit_order(bit_order)

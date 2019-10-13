@@ -17,7 +17,7 @@ def bytes_to_list(msg: bytes, format_: str, byte_order: str = BYTE_ORDER, bit_or
     :param msg: bytes message
     :param format_: message format
     :param byte_order: indicate the byte order
-    :param bit_order: bit order in one byte, `asc` or `dsc` [asc]
+    :param bit_order: bit order in one byte, `LSB` or `MSB` [LSB]
     :return: tuple with unpacked values
     """
     if not isinstance(msg, bytes):
@@ -56,7 +56,7 @@ def bytes_to_dict(
     :param msg: bytes message
     :param config: list of message components define as tuple, (<name>, <format>)
     :param byte_order: indicate the byte order
-    :param bit_order: bit order in one byte, `asc` or `dsc` [asc]
+    :param bit_order: bit order in one byte, `LSB` or `MSB` [LSB]
     :return: dictionary with parameters name as keys and values as values
     """
     keys = [name for name, format_ in config if 'x' != remove_number(format_)]
