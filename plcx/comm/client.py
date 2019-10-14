@@ -35,7 +35,7 @@ async def connect(
                 logger.error(error)  # log error without traceback
                 raise error
 
-            await asyncio.sleep(0.2)  # wait for new try
+            await asyncio.sleep(0.3)  # wait for new try
 
 
 async def clientx(
