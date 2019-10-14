@@ -6,7 +6,6 @@ from plcx.constants import BYTE_ORDER
 from plcx.utils.boolean import byte_to_booleans, BOOLEAN_FORMAT_SYMBOL
 from plcx.utils.find import remove_number, args_counts
 
-
 VALUE = Union[str, int, float, bool, List[bool]]
 
 
