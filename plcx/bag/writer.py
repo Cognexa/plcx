@@ -7,8 +7,6 @@ from typing import Any, List, Tuple
 from plcx.constants import BYTE_ORDER
 from plcx.bag.pack import list_to_bytes
 
-logger = logging.getLogger(__name__)
-
 
 @dataclass
 class Writer:
