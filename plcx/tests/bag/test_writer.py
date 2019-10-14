@@ -10,7 +10,7 @@ from plcx.bag.writer import Writer
         ('c', b'a'),
         [('a', 'i'), ('b', 'i'), ('c', 'i')],
         '@',
-        'LSB',
+        'MSB',
         b'a\x00\x00\x00\x05\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00',
         16,
     ), (
@@ -18,7 +18,7 @@ from plcx.bag.writer import Writer
         ('c', b'a'),
         [('a', 'i'), ('b', 'i'), ('c', 'i')],
         '=',
-        'LSB',
+        'MSB',
         b'a\x05\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00',
         13,
     ), (
@@ -26,7 +26,7 @@ from plcx.bag.writer import Writer
         ('i', 101),
         [('a', 'i'), ('b', 's')],
         '=',
-        'LSB',
+        'MSB',
         b'e\x00\x00\x00\x05\x00\x00\x00a',
         9,
     ), (
@@ -34,7 +34,7 @@ from plcx.bag.writer import Writer
         ('i', 101),
         [('a', 'i'), ('b', 's')],
         '@',
-        'LSB',
+        'MSB',
         b'e\x00\x00\x00\x05\x00\x00\x00a',
         9,
     ), (
@@ -42,7 +42,7 @@ from plcx.bag.writer import Writer
         ('c', b'S'),
         [(None, 'x'), ('a', 'i')],
         '@',
-        'LSB',
+        'MSB',
         b'S\x00\x00\x00\x05\x00\x00\x00',
         8,
     ), (
@@ -50,7 +50,7 @@ from plcx.bag.writer import Writer
         ('c', b'S'),
         [(None, 'x'), ('a', '2i')],
         '@',
-        'LSB',
+        'MSB',
         b'S\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00',
         12,
     ), (
@@ -58,7 +58,7 @@ from plcx.bag.writer import Writer
         ('c', b'S'),
         [(None, 'x'), ('a', '6#xx'), ('b', 'B')],
         '=',
-        'LSB',
+        'MSB',
         b'S\x00\x80\x80\x80\x80\x80\x80\x00\x00\x01',
         11,
     ), (
@@ -66,7 +66,7 @@ from plcx.bag.writer import Writer
         ('c', b'S'),
         [('a', 'B')],
         '=',
-        'LSB',
+        'MSB',
         b'S\01',
         2,
     ),  # skip b
@@ -75,7 +75,7 @@ from plcx.bag.writer import Writer
         ('c', b'S'),
         [('a', 'B'), ('b', 'B')],
         '=',
-        'LSB',
+        'MSB',
         b'S\01\02',
         3,
     ),  # change order of kwargs
@@ -84,7 +84,7 @@ from plcx.bag.writer import Writer
         ('c', b'S'),
         [('a', '#')],
         '=',
-        'MSB',
+        'LSB',
         b'S\x05',
         2,
     ),

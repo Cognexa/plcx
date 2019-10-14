@@ -11,42 +11,42 @@ from plcx.utils.boolean import boolean_to_byte
         ('B', 1),  # message tag
         [('t1', '3s'), ('t2', '?')],  # message format
         '=',
-        'LSB',
+        'MSB',
         {'t1': b'abc', 't2': False},  # expected value
     ), (
         struct.pack('=''2s''i''i''?''c', b'ab', 5, 4, True, boolean_to_byte([True, False, True])),
         ('2s', b'ab'),
         [('i1', 'i'), ('i2', 'i'), ('b', '?'), ('lb', '#')],
         '=',
-        'LSB',
+        'MSB',
         {'i1': 5, 'i2': 4, 'b': True, 'lb': [True, False, True, False, False, False, False, False]},
     ), (
         struct.pack('=c2sx2s2i', b'x', b'tt', b'ab', 5, 4),
         ('x2s', b'tt'),
         [(None, 'x'), ('text', '2s'), ('integers', '2i')],
         '=',
-        'LSB',
+        'MSB',
         {'text': b'ab', 'integers': [5, 4]},
     ), (
         struct.pack('=c2s''2B''2s''2B', b'x', b'tt', 1, 2, b'$$', 1, 2),
         ('x2s', b'tt'),
         [('integers_1', '2B'), ('booleans', '2#'), ('integers_2', '2B')],
         '=',
-        'LSB',
+        'MSB',
         {'integers_1': [1, 2], 'booleans': [[0, 0, 1, 0, 0, 1, 0, 0], [0, 0, 1, 0, 0, 1, 0, 0]], 'integers_2': [1, 2]},
     ), (
         struct.pack('=c''B''2sxx''2B', b'x', 2, b'$$', 1, 2),
         ('c', b'x'),
         [('integers_1', '1B'), ('booleans', '2#xx'), ('integers_2', '2B')],
         '=',
-        'LSB',
+        'MSB',
         {'integers_1': 2, 'booleans': [[0, 0, 1, 0, 0, 1, 0, 0], [0, 0, 1, 0, 0, 1, 0, 0]], 'integers_2': [1, 2]},
     ), (
         struct.pack('=c''2s', b'x', b'\x05\x01'),
         ('c', b'x'),
         [('booleans', '2#')],
         '=',
-        'MSB',
+        'LSB',
         {'booleans': [[1, 0, 1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0, 0, 0]]},
     )
 ])

@@ -2,10 +2,10 @@ from typing import List, NoReturn
 
 from typing import Tuple, Union
 
-BOOLEAN_FORMAT_SYMBOL = '#'
+BOOLEAN_FORMAT_SYMBOL = "#"
 BOOL_VALUE = Union[int, bool]
-VALID_BIT_ORDERS = ["LSB", "MSB"]
-BIT_ORDER = "LSB"
+VALID_BIT_ORDERS = ["MSB", "LSB"]
+BIT_ORDER = "MSB"
 
 
 def validate_bit_order(bit_order) -> NoReturn:
