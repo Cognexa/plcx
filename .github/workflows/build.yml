@@ -4,7 +4,7 @@ on: [push]  # change to tags
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: windows-latest
     strategy:
       max-parallel: 4
       matrix:
