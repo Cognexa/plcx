@@ -1,6 +1,8 @@
 name: Create Python package
 
-on: [push]  # change to tags
+on:
+  tags:
+    - v*
 
 jobs:
   build:
