@@ -22,6 +22,10 @@ jobs:
         pip install -r requirements.txt
     - name: run pytest
       run: pytest -sv
+    - name: black
+      run: black --check .
+    - name: isort
+      run: isort -rc . --check
     - name: create wheel
       run: python setup.py bdist_wheel 
 
