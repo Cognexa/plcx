@@ -1,11 +1,10 @@
 import logging
-
 from dataclasses import dataclass
 from operator import itemgetter
 from typing import Any, List, Tuple
 
-from plcx.constants import BYTE_ORDER
 from plcx.bag.pack import list_to_bytes
+from plcx.constants import BYTE_ORDER
 from plcx.utils.boolean import BIT_ORDER
 
 
@@ -24,10 +23,13 @@ class Writer:
         :return: bytes message
         """
         tag_format_, tag_value = self.tag
-        format_ = tag_format_ + ''.join([f for _, f in self.arguments])
+        format_ = tag_format_ + "".join([f for _, f in self.arguments])
         args = itemgetter(*[name for name, _ in self.arguments if name])(kwargs)
-        args = (args, ) if not isinstance(args, tuple) else args  # convert args to tuple
+        args = (args,) if not isinstance(args, tuple) else args  # convert args to tuple
 
         return list_to_bytes(
-            format_=format_, args=(tag_value,) + args, byte_order=self.byte_order, bit_order=self.bit_order
+            format_=format_,
+            args=(tag_value,) + args,
+            byte_order=self.byte_order,
+            bit_order=self.bit_order,
         )

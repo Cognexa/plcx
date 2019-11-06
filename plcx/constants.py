@@ -1,4 +1,4 @@
-TIMEOUT = .5
+TIMEOUT = 0.5
 """Default timeout in seconds."""
 
 MAX_TRY = 3

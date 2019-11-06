@@ -1,6 +1,5 @@
 import asyncio
 import logging
-
 from dataclasses import dataclass
 from typing import Optional, Tuple
 
@@ -10,10 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 async def connect(
-        host: str,
-        port: int,
-        time_out: float = TIMEOUT,
-        max_try: int = MAX_TRY,
+    host: str, port: int, time_out: float = TIMEOUT, max_try: int = MAX_TRY,
 ) -> Tuple[asyncio.streams.StreamReader, asyncio.streams.StreamWriter]:
     """
     Create connection to server.
@@ -27,8 +23,12 @@ async def connect(
     try_count = 0
     while True:
         try:
-            logger.info(f"try `{try_count}` to establish connection to server `{host}:{port}`")
-            return await asyncio.wait_for(asyncio.open_connection(host=host, port=port), timeout=time_out)
+            logger.info(
+                f"try `{try_count}` to establish connection to server `{host}:{port}`"
+            )
+            return await asyncio.wait_for(
+                asyncio.open_connection(host=host, port=port), timeout=time_out
+            )
         except (OSError, asyncio.TimeoutError) as error:
             try_count += 1
             if try_count >= max_try:
@@ -39,12 +39,12 @@ async def connect(
 
 
 async def clientx(
-        host: str,
-        port: int,
-        message: bytes,
-        response_bytes: int = 0,  # zero means no response
-        time_out: float = TIMEOUT,
-        max_try: int = MAX_TRY,
+    host: str,
+    port: int,
+    message: bytes,
+    response_bytes: int = 0,  # zero means no response
+    time_out: float = TIMEOUT,
+    max_try: int = MAX_TRY,
 ) -> bytes:
     """
     Send message to server.
@@ -58,7 +58,9 @@ async def clientx(
     :return:
     """
     # open connection with timeout
-    reader, writer = await connect(host=host, port=port, time_out=time_out, max_try=max_try)
+    reader, writer = await connect(
+        host=host, port=port, time_out=time_out, max_try=max_try
+    )
 
     # send message to server
     writer.write(message)
@@ -84,11 +86,11 @@ class ClientX:
     max_try: int = MAX_TRY
 
     def send(
-            self,
-            message: bytes,
-            response_bytes: Optional[int] = None,
-            time_out: Optional[float] = None,
-            max_try: Optional[int] = None
+        self,
+        message: bytes,
+        response_bytes: Optional[int] = None,
+        time_out: Optional[float] = None,
+        max_try: Optional[int] = None,
     ) -> bytes:
         """
         Send message.
@@ -99,7 +101,7 @@ class ClientX:
         :param max_try: maximum attention to create server [3 times]
         :return: response bytes message or None
         """
-        logger.debug(f'try send message with client to `{self.host}:{self.port}`')
+        logger.debug(f"try send message with client to `{self.host}:{self.port}`")
 
         loop = asyncio.get_event_loop()
         return loop.run_until_complete(
