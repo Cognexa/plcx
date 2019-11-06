@@ -1,9 +1,6 @@
 name: Create Python package
 
-on:
-  push:
-    tags:
-      - v*
+on: [push]
 
 jobs:
   build:
@@ -24,11 +21,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install wheel twine
-    - name: publish
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-      run: |
-        python setup.py sdist bdist_wheel
-        twine upload dist/*
-
+    - name: run pytest
+      run: pytest -sv
+    - name: black
+      run: black --check .
+    - name: isort
+      run: isort -rc . --check
