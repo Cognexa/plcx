@@ -42,9 +42,5 @@ setup(
     zip_safe=False,
     setup_requires=["pytest-runner"],
     tests_require=["pytest"],
-    install_requires=[
-        line
-        for line in open("requirements.txt", "r").readlines()
-        if not line.startswith("#")
-    ],
+    install_requires=[line for line in open("requirements.txt", "r").readlines() if not line.startswith("#")],
 )

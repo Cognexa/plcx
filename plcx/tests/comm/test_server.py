@@ -40,9 +40,7 @@ class StoppableServerThread(threading.Thread):
         asyncio.set_event_loop(loop)
 
         # define tasks
-        server_ = loop.create_task(
-            serverx(self.host, self.port, self.echo_handler, 16, max_try=self.max_try)
-        )
+        server_ = loop.create_task(serverx(self.host, self.port, self.echo_handler, 16, max_try=self.max_try))
         killer_ = loop.create_task(killer(self, server_))
 
         # run tasks
@@ -117,11 +115,7 @@ def not_arg_handler():
 
 @pytest.mark.parametrize(
     "handler, exp_error",
-    [
-        (raise_timeout, TimeoutError),
-        (raise_handler, AttributeError),
-        (not_arg_handler, TypeError),
-    ],
+    [(raise_timeout, TimeoutError), (raise_handler, AttributeError), (not_arg_handler, TypeError),],
 )
 def test_serverx_error(tcp_client, caplog, handler, exp_error):
     """
@@ -141,13 +135,7 @@ def test_serverx_error(tcp_client, caplog, handler, exp_error):
     with caplog.at_level(logging.ERROR, logger="plcx.comm.server"):
         assert client(b"test", 4) is None
 
-        assert all(
-            [
-                record.name == "plcx.comm.server"
-                for record in caplog.records
-                if record.filename == "server.py"
-            ]
-        )
+        assert all([record.name == "plcx.comm.server" for record in caplog.records if record.filename == "server.py"])
         assert all(
             [
                 issubclass(record.exc_info[0], exp_error)

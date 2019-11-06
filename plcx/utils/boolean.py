@@ -27,8 +27,7 @@ def byte_to_booleans(bytes_: bytes, bit_order: str = BIT_ORDER) -> List[List[boo
 
 
 def boolean_to_byte(
-    booleans: Union[List[List[BOOL_VALUE]], Tuple[List[BOOL_VALUE]], List[BOOL_VALUE]],
-    bit_order: str = BIT_ORDER,
+    booleans: Union[List[List[BOOL_VALUE]], Tuple[List[BOOL_VALUE]], List[BOOL_VALUE]], bit_order: str = BIT_ORDER,
 ) -> bytes:
     """
     Convert list of bool or int (0 or 1) values to bytes. Length of list must be at least 8.
@@ -40,20 +39,14 @@ def boolean_to_byte(
     validate_bit_order(bit_order)
 
     result = bytes()  # create empty result
-    booleans = (
-        booleans if isinstance(booleans[0], (list, tuple)) else [booleans]
-    )  # convert to list of booleans
+    booleans = booleans if isinstance(booleans[0], (list, tuple)) else [booleans]  # convert to list of booleans
     # iter throw list og booleans
     for boolean_list in booleans:
         if len(boolean_list) > 8:
             raise TypeError("function to_byte expected list with max len of 8")
 
-        boolean_list = list(boolean_list) + [0] * (
-            8 - len(boolean_list)
-        )  # convert to 8 bit if it's not
-        boolean_list = (
-            boolean_list[::-1] if bit_order == BIT_ORDER else boolean_list
-        )  # apply bit order
+        boolean_list = list(boolean_list) + [0] * (8 - len(boolean_list))  # convert to 8 bit if it's not
+        boolean_list = boolean_list[::-1] if bit_order == BIT_ORDER else boolean_list  # apply bit order
         result += sum(b << i for i, b in enumerate(boolean_list)).to_bytes(1, "little")
 
     return result

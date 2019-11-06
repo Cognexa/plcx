@@ -34,10 +34,6 @@ def args_counts(format_: str) -> List[Tuple[str, int]]:
     :param format_: bytes message format
     :return: list of tuples contain character and count
     """
-    argument_counts = [
-        (c, find_count(format_[:i])) for i, c in enumerate(format_) if not c.isdigit()
-    ]
+    argument_counts = [(c, find_count(format_[:i])) for i, c in enumerate(format_) if not c.isdigit()]
     # filter  x == pad byte
-    return [
-        (character, count) for character, count in argument_counts if character != "x"
-    ]
+    return [(character, count) for character, count in argument_counts if character != "x"]

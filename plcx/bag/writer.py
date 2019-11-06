@@ -28,8 +28,5 @@ class Writer:
         args = (args,) if not isinstance(args, tuple) else args  # convert args to tuple
 
         return list_to_bytes(
-            format_=format_,
-            args=(tag_value,) + args,
-            byte_order=self.byte_order,
-            bit_order=self.bit_order,
+            format_=format_, args=(tag_value,) + args, byte_order=self.byte_order, bit_order=self.bit_order,
         )

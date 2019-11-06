@@ -16,12 +16,7 @@ def test_clientx(tcp_server, msg):
     host, port = tcp_server
     loop = asyncio.get_event_loop()
 
-    assert (
-        loop.run_until_complete(
-            clientx(host, port, msg.encode(), 32, time_out=5)
-        ).decode()
-        == f"received:'{msg}'"
-    )
+    assert loop.run_until_complete(clientx(host, port, msg.encode(), 32, time_out=5)).decode() == f"received:'{msg}'"
     assert (
         loop.run_until_complete(clientx(host, port, b"control message", 32, time_out=5))
         == b"received:'control message'"
@@ -39,9 +34,7 @@ def test_clientx_context(tcp_server, msg):
     host, port = tcp_server
     client = ClientX(host=host, port=port)
     assert client.send(msg.encode(), 32, time_out=5).decode() == f"received:'{msg}'"
-    assert (
-        client.send(b"control message", 32, time_out=5) == b"received:'control message'"
-    )
+    assert client.send(b"control message", 32, time_out=5) == b"received:'control message'"
 
 
 def test_clientx_error(tcp_server):
@@ -68,6 +61,4 @@ def test_clientx_error(tcp_server):
 
     # testing time out
     with pytest.raises((OSError, asyncio.TimeoutError)):
-        loop.run_until_complete(
-            clientx(host, port, b"123", 16, time_out=0.005, max_try=1)
-        )
+        loop.run_until_complete(clientx(host, port, b"123", 16, time_out=0.005, max_try=1))

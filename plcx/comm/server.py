@@ -8,9 +8,7 @@ from plcx.exceptions import NotReadableMessage
 logger = logging.getLogger(__name__)
 
 
-def tcp_read_echo(
-    response_handler: Callable, read_bytes: int = 512
-) -> asyncio.coroutine:
+def tcp_read_echo(response_handler: Callable, read_bytes: int = 512) -> asyncio.coroutine:
     """
     Read and response to the message from the client.
 
@@ -21,9 +19,7 @@ def tcp_read_echo(
     if not callable(response_handler):
         raise AttributeError("response_handler must be callable function")
 
-    async def echo_handler(
-        reader: asyncio.StreamReader, writer: asyncio.StreamWriter
-    ) -> None:
+    async def echo_handler(reader: asyncio.StreamReader, writer: asyncio.StreamWriter) -> None:
         """
         Receive message from client.
 
@@ -32,9 +28,7 @@ def tcp_read_echo(
         :return:
         """
         client_address, client_port = writer.transport.get_extra_info("peername")
-        logger.info(
-            f"new connection `{client_address}:{client_port}` was established with server"
-        )
+        logger.info(f"new connection `{client_address}:{client_port}` was established with server")
 
         while not writer.is_closing():
             try:
@@ -65,11 +59,7 @@ def tcp_read_echo(
 
 
 async def serverx(
-    host: str,
-    port: int,
-    response_handler: Callable,
-    read_bytes: int = 512,
-    max_try: int = MAX_TRY,
+    host: str, port: int, response_handler: Callable, read_bytes: int = 512, max_try: int = MAX_TRY,
 ) -> asyncio.AbstractServer:
     """
     Initialized event loop and add server to it.
@@ -84,9 +74,7 @@ async def serverx(
     try_count = 0
     while True:
         try:
-            return await asyncio.start_server(
-                tcp_read_echo(response_handler, read_bytes), host, port
-            )
+            return await asyncio.start_server(tcp_read_echo(response_handler, read_bytes), host, port)
         except (OSError, asyncio.TimeoutError) as error:
             try_count += 1
             logger.debug(f"try create serverx `{try_count}`")

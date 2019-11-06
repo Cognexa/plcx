@@ -23,12 +23,8 @@ async def connect(
     try_count = 0
     while True:
         try:
-            logger.info(
-                f"try `{try_count}` to establish connection to server `{host}:{port}`"
-            )
-            return await asyncio.wait_for(
-                asyncio.open_connection(host=host, port=port), timeout=time_out
-            )
+            logger.info(f"try `{try_count}` to establish connection to server `{host}:{port}`")
+            return await asyncio.wait_for(asyncio.open_connection(host=host, port=port), timeout=time_out)
         except (OSError, asyncio.TimeoutError) as error:
             try_count += 1
             if try_count >= max_try:
@@ -58,9 +54,7 @@ async def clientx(
     :return:
     """
     # open connection with timeout
-    reader, writer = await connect(
-        host=host, port=port, time_out=time_out, max_try=max_try
-    )
+    reader, writer = await connect(host=host, port=port, time_out=time_out, max_try=max_try)
 
     # send message to server
     writer.write(message)
