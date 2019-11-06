@@ -27,5 +27,6 @@ jobs:
     - name: isort
       run: isort -rc . --check
     - name: create wheel
-      run: python setup.py bdist_wheel 
-
+      run: |
+        pip install wheel
+        python setup.py bdist_wheel 
