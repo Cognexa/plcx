@@ -48,8 +48,7 @@ def tcp_read_echo(response_handler: Callable, read_bytes: int = 512) -> asyncio.
                 # do not close connection if this error type
                 if reader.at_eof():
                     break
-                else:
-                    logger.warning(error)
+                logger.warning(error)
 
             except Exception as error:
                 logger.error(error)
