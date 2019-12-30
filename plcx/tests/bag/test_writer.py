@@ -53,7 +53,7 @@ from plcx.bag.writer import Writer
         ({}, ("c", b"S"), [], "=", "LSB", b"S", 1,),
     ],
 )
-def test_write(kwargs, tag, arguments, byte_order, bit_order, exp_value, exp_size):
+def test_writer(kwargs, tag, arguments, byte_order, bit_order, exp_value, exp_size):
     """
     Test base behavior of plcx.bag.writer.Writer.
 
