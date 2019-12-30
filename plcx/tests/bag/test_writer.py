@@ -50,9 +50,10 @@ from plcx.bag.writer import Writer
         ({"a": 1, "b": 2}, ("c", b"S"), [("a", "B")], "=", "MSB", b"S\01", 2,),  # skip b
         ({"b": 2, "a": 1}, ("c", b"S"), [("a", "B"), ("b", "B")], "=", "MSB", b"S\01\02", 3,),  # change order of kwargs
         ({"a": [True, False, True]}, ("c", b"S"), [("a", "#")], "=", "LSB", b"S\x05", 2,),
+        ({}, ("c", b"S"), [], "=", "LSB", b"S", 1,),
     ],
 )
-def test_write(kwargs, tag, arguments, byte_order, bit_order, exp_value, exp_size):
+def test_writer(kwargs, tag, arguments, byte_order, bit_order, exp_value, exp_size):
     """
     Test base behavior of plcx.bag.writer.Writer.
 
