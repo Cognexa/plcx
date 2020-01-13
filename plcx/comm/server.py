@@ -2,6 +2,7 @@ import asyncio
 import logging
 from typing import Callable
 
+from plcx.utils.coroutine import await_if_coroutine
 from plcx.constants import MAX_TRY
 from plcx.exceptions import NotReadableMessage
 
@@ -38,7 +39,9 @@ def tcp_read_echo(response_handler: Callable, read_bytes: int = 512) -> asyncio.
                 logger.debug("message received")
 
                 # wait for message response
-                response_handler(message=message, reader=reader, writer=writer)
+                # TODO: write test for this function
+                await await_if_coroutine(response_handler, message=message, reader=reader, writer=writer)
+
                 logger.debug("handle message from client")
 
                 # flush the writer buffer
