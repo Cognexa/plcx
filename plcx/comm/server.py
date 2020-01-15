@@ -1,10 +1,10 @@
 import asyncio
 import logging
-from typing import Callable, Union, Coroutine
+from typing import Callable, Coroutine, Union
 
-from plcx.utils.coroutine import await_if_coroutine
 from plcx.constants import MAX_TRY
 from plcx.exceptions import NotReadableMessage
+from plcx.utils.coroutine import await_if_coroutine
 
 logger = logging.getLogger(__name__)
 
