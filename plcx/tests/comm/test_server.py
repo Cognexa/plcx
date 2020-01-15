@@ -7,6 +7,8 @@ import pytest
 
 from plcx.comm.server import serverx
 
+logger = logging.getLogger(__name__)
+
 
 class StoppableServerThread(threading.Thread):
     """
@@ -54,19 +56,8 @@ class StoppableServerThread(threading.Thread):
             loop.close()
 
 
-def test_serverx(tcp_client):
-    """
-    Test serverx object for reading message form client.
-
-    :param tcp_client: function for send message to server
-    """
-    host, port, client = tcp_client
-
-    def handler(message, reader, writer):
-        logging.info(f"got message: `{message}`")
-        logging.debug(f"got reader: `{reader}` and `{writer}`")
-        writer.write(b"ok")
-
+def run_test_serverx(host, port, client, handler):
+    """testing serverx with basic message"""
     thread = StoppableServerThread(host, port, handler)
     thread.start()
 
@@ -80,6 +71,39 @@ def test_serverx(tcp_client):
 
     assert not thread.is_alive()
     assert thread.stopped()
+
+
+def test_serverx(tcp_client):
+    """
+    Test serverx object for reading message form client.
+
+    :param tcp_client: function for send message to server
+    """
+    host, port, client = tcp_client
+
+    def handler(message, reader, writer):
+        logger.info(f"got message: `{message}`")
+        logger.debug(f"got reader: `{reader}` and `{writer}`")
+        writer.write(b"ok")
+
+    run_test_serverx(host, port, client, handler)
+
+
+def test_serverx_async_handler(tcp_client):
+    """
+    Test serverx object for reading message form client and handle it with coroutine.
+
+    :param tcp_client: function for send message to server
+    """
+    host, port, client = tcp_client
+
+    async def handler(message, reader, writer):
+        logger.info(f"got message: `{message}`")
+        logger.debug(f"got reader: `{reader}` and `{writer}`")
+        await asyncio.sleep(0.01)
+        writer.write(b"ok")
+
+    run_test_serverx(host, port, client, handler)
 
 
 def test_serverx_try_connect(tcp_client):
@@ -115,7 +139,7 @@ def not_arg_handler():
 
 @pytest.mark.parametrize(
     "handler, exp_error",
-    [(raise_timeout, TimeoutError), (raise_handler, AttributeError), (not_arg_handler, TypeError),],
+    [(raise_timeout, TimeoutError), (raise_handler, AttributeError), (not_arg_handler, TypeError)],
 )
 def test_serverx_error(tcp_client, caplog, handler, exp_error):
     """

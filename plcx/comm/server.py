@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from typing import Callable
+from typing import Callable, Union, Coroutine
 
 from plcx.utils.coroutine import await_if_coroutine
 from plcx.constants import MAX_TRY
@@ -9,7 +9,7 @@ from plcx.exceptions import NotReadableMessage
 logger = logging.getLogger(__name__)
 
 
-def tcp_read_echo(response_handler: Callable, read_bytes: int = 512) -> asyncio.coroutine:
+def tcp_read_echo(response_handler: Union[Callable, Coroutine], read_bytes: int = 512) -> asyncio.coroutine:
     """
     Read and response to the message from the client.
 
@@ -39,7 +39,6 @@ def tcp_read_echo(response_handler: Callable, read_bytes: int = 512) -> asyncio.
                 logger.debug("message received")
 
                 # wait for message response
-                # TODO: write test for this function
                 await await_if_coroutine(response_handler, message=message, reader=reader, writer=writer)
 
                 logger.debug("handle message from client")
@@ -64,7 +63,7 @@ def tcp_read_echo(response_handler: Callable, read_bytes: int = 512) -> asyncio.
 
 
 async def serverx(
-    host: str, port: int, response_handler: Callable, read_bytes: int = 512, max_try: int = MAX_TRY,
+    host: str, port: int, response_handler: Union[Callable, Coroutine], read_bytes: int = 512, max_try: int = MAX_TRY,
 ) -> asyncio.AbstractServer:
     """
     Initialized event loop and add server to it.

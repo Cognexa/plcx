@@ -2,9 +2,9 @@ import inspect
 from typing import Any
 
 
-async def await_if_coroutine(obj: Any, *args, **kwargs) -> None:
+async def await_if_coroutine(obj: Any, *args, **kwargs) -> Any:
     """if obj is coroutine await it"""
-    if inspect.iscoroutine(obj):
-        await obj(*args, **kwargs)
+    if inspect.iscoroutinefunction(obj):
+        return await obj(*args, **kwargs)
     else:
-        obj(*args, **kwargs)
+        return obj(*args, **kwargs)
