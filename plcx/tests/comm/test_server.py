@@ -61,6 +61,7 @@ def run_test_serverx(host, port, client, handler):
     thread = StoppableServerThread(host, port, handler)
     thread.start()
 
+    time.sleep(.1)  # add sleep
     assert thread.is_alive()
 
     assert client(b"test", 4) == b"ok"
