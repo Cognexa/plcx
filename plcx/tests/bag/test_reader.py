@@ -61,6 +61,8 @@ from plcx.utils.boolean import boolean_to_byte
             "LSB",
             {"booleans": [[1, 0, 1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0, 0, 0]]},
         ),
+        (struct.pack("=c", b"S"), ("c", b"S"), [], "=", "LSB", {},),
+        (struct.pack("=c" "x", b"S"), ("c", b"S"), [(None, "x")], "=", "LSB", {},),
     ],
 )
 def test_reader(msg, tag, arguments, byte_order, bit_order, exp_value):
