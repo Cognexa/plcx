@@ -51,6 +51,7 @@ from plcx.bag.writer import Writer
         ({"b": 2, "a": 1}, ("c", b"S"), [("a", "B"), ("b", "B")], "=", "MSB", b"S\01\02", 3,),  # change order of kwargs
         ({"a": [True, False, True]}, ("c", b"S"), [("a", "#")], "=", "LSB", b"S\x05", 2,),
         ({}, ("c", b"S"), [], "=", "LSB", b"S", 1,),
+        ({}, ("c", b"S"), [(None, "x")], "=", "LSB", b"S\x00", 2,),
     ],
 )
 def test_writer(kwargs, tag, arguments, byte_order, bit_order, exp_value, exp_size):
