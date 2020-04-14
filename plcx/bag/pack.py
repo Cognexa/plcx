@@ -36,10 +36,7 @@ def to_bytes(format_: str, *args, byte_order: str = BYTE_ORDER, bit_order: str =
 
 
 def list_to_bytes(
-    format_: str,
-    args: Union[Tuple, List],
-    byte_order: str = BYTE_ORDER,
-    bit_order: str = BIT_ORDER,
+    format_: str, args: Union[Tuple, List], byte_order: str = BYTE_ORDER, bit_order: str = BIT_ORDER,
 ) -> bytes:
     """
     Pack list of arguments to bytes message.
