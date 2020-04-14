@@ -23,8 +23,9 @@ class Writer:
         """
         tag_format_, tag_value = self.tag
         format_ = tag_format_ + "".join([f for _, f in self.arguments])
-        if self.arguments:
-            args = itemgetter(*[name for name, _ in self.arguments if name])(kwargs)
+        arguments_names = [name for name, _ in self.arguments if name]
+        if arguments_names:
+            args = itemgetter(*arguments_names)(kwargs)
             args = (args,) if not isinstance(args, tuple) else args  # convert args to tuple
         else:
             args = ()
