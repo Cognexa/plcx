@@ -4,7 +4,10 @@ import re
 
 from setuptools import setup
 
+from pipfile import load  # isort:skip
+
 here = os.path.abspath(os.path.dirname(__file__))
+requires = load("Pipfile").data["default"]
 
 
 def read(*parts):
@@ -37,10 +40,10 @@ setup(
     author="Cognexa Solutions s.r.o.",
     author_email="info@cognexa.com",
     license="MIT",
-    packages=["plcx", "plcx.bag", "plcx.comm", "plcx.tests", "plcx.utils",],
+    packages=["plcx", "plcx.bag", "plcx.comm", "plcx.tests", "plcx.utils"],
     include_package_data=True,
     zip_safe=False,
     setup_requires=["pytest-runner"],
     tests_require=["pytest"],
-    install_requires=[line for line in open("requirements.txt", "r").readlines() if not line.startswith("#")],
+    install_requires=["".join(r).rstrip("*") for r in requires.items()],
 )

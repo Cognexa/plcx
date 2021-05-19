@@ -18,9 +18,27 @@ async def is_coroutine(x, *args):
     "coroutine, exp_return, args",
     [
         (not_coroutine, 2, (2,)),
-        (not_coroutine, "a", ("a", 1, 2, 3,)),
+        (
+            not_coroutine,
+            "a",
+            (
+                "a",
+                1,
+                2,
+                3,
+            ),
+        ),
         (is_coroutine, 2, (2,)),
-        (is_coroutine, "a", ("a", 1, 2, 3,)),
+        (
+            is_coroutine,
+            "a",
+            (
+                "a",
+                1,
+                2,
+                3,
+            ),
+        ),
     ],
 )
 def test_await_if_coroutine(coroutine, exp_return, args):

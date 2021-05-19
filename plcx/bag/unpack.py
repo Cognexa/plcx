@@ -43,7 +43,10 @@ def bytes_to_list(msg: bytes, format_: str, byte_order: str = BYTE_ORDER, bit_or
 
 
 def bytes_to_dict(
-    msg: bytes, config: List[Tuple[Optional[str], str]], byte_order: str = BYTE_ORDER, bit_order: str = BIT_ORDER,
+    msg: bytes,
+    config: List[Tuple[Optional[str], str]],
+    byte_order: str = BYTE_ORDER,
+    bit_order: str = BIT_ORDER,
 ) -> Dict[str, VALUE]:
     """
     Unpack bytes with define format to dictionary.
@@ -56,6 +59,9 @@ def bytes_to_dict(
     """
     keys = [name for name, format_ in config if "x" != remove_number(format_)]
     values = bytes_to_list(
-        msg=msg, format_="".join([f for _, f in config]), byte_order=byte_order, bit_order=bit_order,
+        msg=msg,
+        format_="".join([f for _, f in config]),
+        byte_order=byte_order,
+        bit_order=bit_order,
     )
     return dict(zip(keys, values))

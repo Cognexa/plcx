@@ -6,6 +6,7 @@ verify_ssl = true
 [dev-packages]
 black = ">=19"
 isort = ">=4.3"
+pytest = ">=4"
 
 [packages]
 atomicwrites = ">=1.1"
@@ -13,7 +14,7 @@ attrs = ">=17.1"
 importlib-metadata = ">=0.18"
 more-itertools = ">=7"
 pluggy = ">=0.11"
-py = ">=1.5"
+py = ">=1.10"
 pyparsing = ">=2.2"
 pytest = ">=4"
 python-forge = ">=18"

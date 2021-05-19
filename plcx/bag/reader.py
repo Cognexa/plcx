@@ -26,7 +26,10 @@ class Reader:
         """
         tag_format, _ = self.tag
         return bytes_to_dict(
-            message, [("tag", tag_format)] + self.arguments, byte_order=self.byte_order, bit_order=self.bit_order,
+            message,
+            [("tag", tag_format)] + self.arguments,
+            byte_order=self.byte_order,
+            bit_order=self.bit_order,
         )
 
     def is_readable(self, message: bytes) -> bool:

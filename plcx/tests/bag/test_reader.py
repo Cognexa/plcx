@@ -18,12 +18,24 @@ from plcx.utils.boolean import boolean_to_byte
             {"t1": b"abc", "t2": False},  # expected value
         ),
         (
-            struct.pack("=" "2s" "i" "i" "?" "c", b"ab", 5, 4, True, boolean_to_byte([True, False, True]),),
+            struct.pack(
+                "=" "2s" "i" "i" "?" "c",
+                b"ab",
+                5,
+                4,
+                True,
+                boolean_to_byte([True, False, True]),
+            ),
             ("2s", b"ab"),
             [("i1", "i"), ("i2", "i"), ("b", "?"), ("lb", "#")],
             "=",
             "MSB",
-            {"i1": 5, "i2": 4, "b": True, "lb": [True, False, True, False, False, False, False, False],},
+            {
+                "i1": 5,
+                "i2": 4,
+                "b": True,
+                "lb": [True, False, True, False, False, False, False, False],
+            },
         ),
         (
             struct.pack("=c2sx2s2i", b"x", b"tt", b"ab", 5, 4),
@@ -51,7 +63,11 @@ from plcx.utils.boolean import boolean_to_byte
             [("integers_1", "1B"), ("booleans", "2#xx"), ("integers_2", "2B")],
             "=",
             "MSB",
-            {"integers_1": 2, "booleans": [[0, 0, 1, 0, 0, 1, 0, 0], [0, 0, 1, 0, 0, 1, 0, 0]], "integers_2": [1, 2],},
+            {
+                "integers_1": 2,
+                "booleans": [[0, 0, 1, 0, 0, 1, 0, 0], [0, 0, 1, 0, 0, 1, 0, 0]],
+                "integers_2": [1, 2],
+            },
         ),
         (
             struct.pack("=c" "2s", b"x", b"\x05\x01"),
@@ -61,8 +77,22 @@ from plcx.utils.boolean import boolean_to_byte
             "LSB",
             {"booleans": [[1, 0, 1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0, 0, 0]]},
         ),
-        (struct.pack("=c", b"S"), ("c", b"S"), [], "=", "LSB", {},),
-        (struct.pack("=c" "x", b"S"), ("c", b"S"), [(None, "x")], "=", "LSB", {},),
+        (
+            struct.pack("=c", b"S"),
+            ("c", b"S"),
+            [],
+            "=",
+            "LSB",
+            {},
+        ),
+        (
+            struct.pack("=c" "x", b"S"),
+            ("c", b"S"),
+            [(None, "x")],
+            "=",
+            "LSB",
+            {},
+        ),
     ],
 )
 def test_reader(msg, tag, arguments, byte_order, bit_order, exp_value):
@@ -87,8 +117,20 @@ def test_reader(msg, tag, arguments, byte_order, bit_order, exp_value):
     [
         (struct.pack("=" "s" "c", b"a", b"t"), ("s", b"a"), [(None, "x")], "=", True),
         (struct.pack("=" "s" "c", b"a", b"t"), ("s", b"b"), [(None, "x")], "=", False),
-        (struct.pack("=" "2s" "c", b"ab", b"t"), ("s", b"a"), [(None, "2x")], "=", True,),
-        (struct.pack("=" "2s" "c", b"ab", b"t"), ("2s", b"ab"), [(None, "x")], "=", True,),
+        (
+            struct.pack("=" "2s" "c", b"ab", b"t"),
+            ("s", b"a"),
+            [(None, "2x")],
+            "=",
+            True,
+        ),
+        (
+            struct.pack("=" "2s" "c", b"ab", b"t"),
+            ("2s", b"ab"),
+            [(None, "x")],
+            "=",
+            True,
+        ),
     ],
 )
 def test_reader_message_not_readable(msg, tag, arguments, byte_order, is_readable):
