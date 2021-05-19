@@ -26,9 +26,33 @@ from plcx.bag.writer import Writer
             b"a\x05\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00",
             13,
         ),
-        ({"a": 5, "b": b"a"}, ("i", 101), [("a", "i"), ("b", "s")], "=", "MSB", b"e\x00\x00\x00\x05\x00\x00\x00a", 9,),
-        ({"a": 5, "b": b"a"}, ("i", 101), [("a", "i"), ("b", "s")], "@", "MSB", b"e\x00\x00\x00\x05\x00\x00\x00a", 9,),
-        ({"a": 5}, ("c", b"S"), [(None, "x"), ("a", "i")], "@", "MSB", b"S\x00\x00\x00\x05\x00\x00\x00", 8,),
+        (
+            {"a": 5, "b": b"a"},
+            ("i", 101),
+            [("a", "i"), ("b", "s")],
+            "=",
+            "MSB",
+            b"e\x00\x00\x00\x05\x00\x00\x00a",
+            9,
+        ),
+        (
+            {"a": 5, "b": b"a"},
+            ("i", 101),
+            [("a", "i"), ("b", "s")],
+            "@",
+            "MSB",
+            b"e\x00\x00\x00\x05\x00\x00\x00a",
+            9,
+        ),
+        (
+            {"a": 5},
+            ("c", b"S"),
+            [(None, "x"), ("a", "i")],
+            "@",
+            "MSB",
+            b"S\x00\x00\x00\x05\x00\x00\x00",
+            8,
+        ),
         (
             {"a": [1, 2]},
             ("c", b"S"),
@@ -47,11 +71,51 @@ from plcx.bag.writer import Writer
             b"S\x00\x80\x80\x80\x80\x80\x80\x00\x00\x01",
             11,
         ),
-        ({"a": 1, "b": 2}, ("c", b"S"), [("a", "B")], "=", "MSB", b"S\01", 2,),  # skip b
-        ({"b": 2, "a": 1}, ("c", b"S"), [("a", "B"), ("b", "B")], "=", "MSB", b"S\01\02", 3,),  # change order of kwargs
-        ({"a": [True, False, True]}, ("c", b"S"), [("a", "#")], "=", "LSB", b"S\x05", 2,),
-        ({}, ("c", b"S"), [], "=", "LSB", b"S", 1,),
-        ({}, ("c", b"S"), [(None, "x")], "=", "LSB", b"S\x00", 2,),
+        (
+            {"a": 1, "b": 2},
+            ("c", b"S"),
+            [("a", "B")],
+            "=",
+            "MSB",
+            b"S\01",
+            2,
+        ),  # skip b
+        (
+            {"b": 2, "a": 1},
+            ("c", b"S"),
+            [("a", "B"), ("b", "B")],
+            "=",
+            "MSB",
+            b"S\01\02",
+            3,
+        ),  # change order of kwargs
+        (
+            {"a": [True, False, True]},
+            ("c", b"S"),
+            [("a", "#")],
+            "=",
+            "LSB",
+            b"S\x05",
+            2,
+        ),
+        (
+            {},
+            ("c", b"S"),
+            [],
+            "=",
+            "LSB",
+            b"S",
+            1,
+        ),
+        (
+            {},
+            ("c", b"S"),
+            [(None, "x")],
+            "=",
+            "LSB",
+            b"S\x00",
+            2,
+        ),
     ],
 )
 def test_writer(kwargs, tag, arguments, byte_order, bit_order, exp_value, exp_size):
@@ -75,7 +139,10 @@ def test_writer(kwargs, tag, arguments, byte_order, bit_order, exp_value, exp_si
 
 
 @pytest.mark.parametrize(
-    "kwargs, tag, arguments, byte_order, error", [({"b": b"a"}, ("s", 101), [("b", "s")], "@", struct.error),],
+    "kwargs, tag, arguments, byte_order, error",
+    [
+        ({"b": b"a"}, ("s", 101), [("b", "s")], "@", struct.error),
+    ],
 )
 def test_write_error(kwargs, tag, arguments, byte_order, error):
     """

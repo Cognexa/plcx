@@ -9,7 +9,10 @@ logger = logging.getLogger(__name__)
 
 
 async def connect(
-    host: str, port: int, time_out: float = TIMEOUT, max_try: int = MAX_TRY,
+    host: str,
+    port: int,
+    time_out: float = TIMEOUT,
+    max_try: int = MAX_TRY,
 ) -> Tuple[asyncio.streams.StreamReader, asyncio.streams.StreamWriter]:
     """
     Create connection to server.

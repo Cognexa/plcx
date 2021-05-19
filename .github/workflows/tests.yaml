@@ -18,9 +18,9 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install black isort
+        python -m pip install --upgrade pip pipenv pipfile
+        pipenv install --system --deploy --ignore-pipfile
+        pip install black isort pytest
     - name: pytest
       run: pytest -sv
     - name: black

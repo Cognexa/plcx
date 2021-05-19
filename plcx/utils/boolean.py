@@ -27,7 +27,8 @@ def byte_to_booleans(bytes_: bytes, bit_order: str = BIT_ORDER) -> List[List[boo
 
 
 def boolean_to_byte(
-    booleans: Union[List[List[BOOL_VALUE]], Tuple[List[BOOL_VALUE]], List[BOOL_VALUE]], bit_order: str = BIT_ORDER,
+    booleans: Union[List[List[BOOL_VALUE]], Tuple[List[BOOL_VALUE]], List[BOOL_VALUE]],
+    bit_order: str = BIT_ORDER,
 ) -> bytes:
     """
     Convert list of bool or int (0 or 1) values to bytes. Length of list must be at least 8.
